@@ -20,6 +20,8 @@ import com.ebay.soap.eBLBaseComponents.DetailLevelCodeType;
 import com.ebay.soap.eBLBaseComponents.ItemIDType;
 import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.ebay.soap.eBLBaseComponents.PriceRangeFilterType;
+import com.ebay.soap.eBLBaseComponents.ProximitySearchType;
+import com.ebay.soap.eBLBaseComponents.SearchFlagsCodeType;
 import com.ebay.soap.eBLBaseComponents.SearchResultItemType;
 import com.thornapple.ebay.manager.AuctionItem;
 import com.thornapple.ebay.manager.ItemSearchCriteria;
@@ -75,6 +77,24 @@ public class EbayItemAdapter {
         GetSearchResultsCall api = new GetSearchResultsCall(this.apiContext);
         api.setQuery(criteria.getQuery());
         
+        // Search flags
+        ArrayList al = new ArrayList();
+        if( criteria.isUseDescription() )
+            al.add(SearchFlagsCodeType.SearchInDescription);
+        
+        SearchFlagsCodeType flags[] = new SearchFlagsCodeType[al.size()];
+        for(int i = 0; i < al.size(); i++ )
+            flags[i] = (SearchFlagsCodeType)al.get(i);
+        
+        if( flags.length > 0 )
+            api.setSearchFlags(flags);
+        
+        if (criteria.getMaximumDistance() > 0 && criteria.getZipCode() != null){
+            ProximitySearchType pst = new ProximitySearchType();
+            pst.setPostalCode(criteria.getZipCode());
+            pst.setMaxDistance(criteria.getMaximumDistance());
+            api.setProximitySearch(pst);
+        }
         if (criteria.getMaximumPrice() > 0){
             PriceRangeFilterType priceRange = new PriceRangeFilterType();
             priceRange.setMinPrice(new AmountType(criteria.getMinimumPrice()));
