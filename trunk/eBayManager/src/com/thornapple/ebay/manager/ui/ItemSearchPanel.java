@@ -6,14 +6,31 @@
 
 package com.thornapple.ebay.manager.ui;
 
+import binding.BindingContext;
+import binding.BindingDescription;
+import binding.swing.SwingBindingSupport;
+import com.thornapple.ebay.manager.ItemSearchCriteria;
+
 /**
  *
  * @author  Bill
  */
 public class ItemSearchPanel extends javax.swing.JPanel {
     
+    private ItemSearchCriteria criteria;
+    private BindingContext context = new BindingContext();
+    
+    
     /** Creates new form ItemSearchPanel */
     public ItemSearchPanel() {
+        initComponents();
+        SwingBindingSupport.register();
+    }
+    
+     /** Creates new form ItemSearchPanel */
+    public ItemSearchPanel(ItemSearchCriteria criteria) {
+        this.criteria = criteria;
+        SwingBindingSupport.register();
         initComponents();
     }
     
@@ -25,19 +42,35 @@ public class ItemSearchPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         jLabel1 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jTextField1 = new javax.swing.JTextField();
+        cbSearchDescription = new javax.swing.JCheckBox();
+        txtSearch = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        cbUseTotalPrice = new javax.swing.JCheckBox();
+        txtMinPrice = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtMaxPrice = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txtMiles = new javax.swing.JTextField();
+        txtZip = new javax.swing.JTextField();
 
         jLabel1.setText("Title");
 
-        jCheckBox1.setText("Search Description");
-        jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        cbSearchDescription.setText("Search Description");
+        cbSearchDescription.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbSearchDescription.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        jTextField1.setText("jTextField1");
+        jLabel2.setText("Price");
 
-        jLabel2.setText("jLabel2");
+        cbUseTotalPrice.setText("Include Shipping");
+        cbUseTotalPrice.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbUseTotalPrice.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
+        jLabel3.setText("to");
+
+        jLabel4.setText("Location");
+
+        jLabel5.setText("miles from zip");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -46,12 +79,32 @@ public class ItemSearchPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .add(layout.createSequentialGroup()
+                        .add(10, 10, 10)
+                        .add(cbSearchDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(10, 10, 10)
+                        .add(cbUseTotalPrice))
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel4)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtMiles, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 34, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jLabel5)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtZip, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 44, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtMinPrice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 55, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jLabel3)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtMaxPrice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 63, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
-                    .add(jLabel2))
+                        .add(txtSearch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -60,21 +113,65 @@ public class ItemSearchPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(txtSearch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jCheckBox1)
+                .add(cbSearchDescription)
                 .add(16, 16, 16)
-                .add(jLabel2)
-                .addContainerGap(219, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
+                    .add(jLabel3)
+                    .add(txtMinPrice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(txtMaxPrice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbUseTotalPrice)
+                .add(22, 22, 22)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel4)
+                    .add(jLabel5)
+                    .add(txtZip, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(txtMiles, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox cbSearchDescription;
+    private javax.swing.JCheckBox cbUseTotalPrice;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JTextField txtMaxPrice;
+    private javax.swing.JTextField txtMiles;
+    private javax.swing.JTextField txtMinPrice;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtZip;
     // End of variables declaration//GEN-END:variables
+
+    public ItemSearchCriteria getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(ItemSearchCriteria criteria) {
+        this.criteria = criteria;
+        context.unbind();
+        bindComponents();
+    }
+
+    private void bindComponents() {
+        context.addDescription(new BindingDescription(criteria,"query",txtSearch,"text"));
+        context.addDescription(new BindingDescription(criteria,"useDescription",cbSearchDescription,"selected"));
+        //context.addDescription(new BindingDescription(criteria,"maximumDistance",txtMiles,"text"));
+        context.addDescription(new BindingDescription(criteria,"zipCode",txtZip,"text"));
+        //context.addDescription(new BindingDescription(criteria,"minimumPrice",txtMinPrice,"text"));
+        //context.addDescription(new BindingDescription(criteria,"maximumPrice",txtMaxPrice,"text"));
+        context.bind();
+    }
+    
+    public void commit(){
+       context.commitUncommittedValues();
+    }
     
 }
