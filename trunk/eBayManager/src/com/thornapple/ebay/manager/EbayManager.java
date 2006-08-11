@@ -6,15 +6,65 @@
 
 package com.thornapple.ebay.manager;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.swing.EventTableModel;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.ebay.sdk.util.eBayUtil;
+import com.ebay.soap.eBLBaseComponents.ItemType;
+import com.ebay.soap.eBLBaseComponents.ListingDetailsType;
+import com.thornapple.ebay.manager.adapter.EbayItemAdapter;
+import java.util.Comparator;
+import java.util.List;
+import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
+import org.jdesktop.swingx.decorator.HighlighterPipeline;
+import org.jdesktop.swingx.decorator.PatternFilter;
+
 /**
  *
  * @author  Bill
  */
 public class EbayManager extends javax.swing.JFrame {
     
+    private EventList itemEventList = new BasicEventList();
+    private SortedList sortedItems = new SortedList(itemEventList, new AuctionItemComparator());
+    private ItemSearchCriteria criteria = new ItemSearchCriteria();
+    
+    final String[] colNames = new String[] {
+        "ItemID", "Type", "Title", "SubTitle", "StartTime", "Price", "BidCount", "EndTime","Shipping"};
+    
+    
     /** Creates new form EbayManager */
     public EbayManager() {
         initComponents();
+        final PatternFilter patternFilter = new PatternFilter();
+        patternFilter.setColumnIndex(2);
+        
+//        filterTextField.addKeyListener(new KeyListener() {
+//            public void keyTyped(KeyEvent e) {
+//                try {
+//                    patternFilter.setPattern(Pattern.compile(filterTextField.getText()));
+//                } catch (Exception e1) {
+//                }
+//            }
+//
+//            public void keyPressed(KeyEvent e) {
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
+//        tblResults.setFilters(new FilterPipeline(new Filter[]{patternFilter}));
+        
+        HighlighterPipeline highlighter = new HighlighterPipeline();
+        highlighter.addHighlighter(new AlternateRowHighlighter());
+        tblResults.setHighlighters(highlighter);
+        EventTableModel itemTableModel = new EventTableModel(sortedItems, new ItemTableFormat());
+        tblResults.setModel(itemTableModel);
+        TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
+        
     }
     
     /** This method is called from within the constructor to
@@ -24,22 +74,113 @@ public class EbayManager extends javax.swing.JFrame {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        itemListForm1 = new com.thornapple.ebay.manager.ui.ItemListForm();
+        jButton1 = new javax.swing.JButton();
+        itemSearchPanel = new com.thornapple.ebay.manager.ui.ItemSearchPanel();
+        itemSearchPanel.setCriteria(criteria);
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jXHyperlink1 = new org.jdesktop.swingx.JXHyperlink();
+        jXHyperlink2 = new org.jdesktop.swingx.JXHyperlink();
+        itemFilterPanel1 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblResults = new org.jdesktop.swingx.JXTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jButton1.setText("Find It!");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Actions:");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Apply label", "Add to My Ebay" }));
+
+        jLabel2.setText("Select:");
+
+        jXHyperlink1.setText("All");
+
+        jXHyperlink2.setText("None");
+
+        tblResults.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        tblResults.setSortable(false);
+        jScrollPane1.setViewportView(tblResults);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, itemListForm1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(itemSearchPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1)
+                    .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jXHyperlink1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jXHyperlink2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 280, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jComboBox1, 0, 316, Short.MAX_VALUE))
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(itemListForm1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel1)
+                            .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jXHyperlink1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jXHyperlink2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel2))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(itemSearchPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton1)
+                        .add(21, 21, 21)
+                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 205, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        EbayItemAdapter ebaySearch = new EbayItemAdapter();
+        
+        try {
+            itemSearchPanel.commit();
+            final List<AuctionItem> results = ebaySearch.findItems(criteria);
+            itemEventList.clear();
+            itemEventList.addAll(results);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -53,7 +194,59 @@ public class EbayManager extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.thornapple.ebay.manager.ui.ItemListForm itemListForm1;
+    private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel1;
+    private com.thornapple.ebay.manager.ui.ItemSearchPanel itemSearchPanel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlink1;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlink2;
+    private org.jdesktop.swingx.JXTable tblResults;
     // End of variables declaration//GEN-END:variables
+    
+    
+    class AuctionItemComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            AuctionItem itemA = (AuctionItem)a;
+            AuctionItem itemB = (AuctionItem)b;
+            
+            //initially sort by cost, lower is more important
+            double itemAValue = itemA.getCurrentPrice();
+            double itemBValue = itemB.getCurrentPrice();
+            
+            return new Double(itemAValue - itemBValue).intValue();
+        }
+    }
+    
+    class ItemTableFormat implements TableFormat {
+        
+        public int getColumnCount() {
+            return colNames.length;
+        }
+        
+        public String getColumnName(int column) {
+            return colNames[column];
+        }
+        
+        public Object getColumnValue(Object baseObject, int column) {
+            ItemType item = ((AuctionItem)baseObject).getItem();
+            ListingDetailsType dtl = item.getListingDetails();
+            
+            if (column == 0) return item.getItemID().toString();
+            else if (column == 1) return item.getListingType().toString();
+            else if (column == 2) return item.getTitle();
+            else if (column == 3) return item.getSubTitle() == null ? "" : item.getSubTitle();
+            else if (column == 4) return eBayUtil.toAPITimeString(dtl.getStartTime().getTime());
+            else if (column == 5) return (new Double(item.getSellingStatus().getCurrentPrice().getValue())).toString();
+            else if (column == 6) return item.getSellingStatus().getBidCount().toString();
+            else if (column == 7) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
+            else if (item.getShippingDetails() != null && item.getShippingDetails().getDefaultShippingCost() != null)
+                return item.getShippingDetails().getDefaultShippingCost().getValue()+"";
+            else
+                return "";
+        }
+    }
     
 }
