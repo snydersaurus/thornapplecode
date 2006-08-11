@@ -8,18 +8,29 @@ package com.thornapple.ebay.manager.ui;
 
 import binding.BindingContext;
 import binding.BindingDescription;
+import com.ebay.sdk.util.eBayUtil;
+import com.ebay.soap.eBLBaseComponents.ItemType;
+import com.ebay.soap.eBLBaseComponents.ListingDetailsType;
 import com.thornapple.ebay.manager.AuctionItem;
 import com.thornapple.ebay.manager.ItemSearchCriteria;
 import com.thornapple.ebay.manager.adapter.EbayItemAdapter;
-import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
-import javax.swing.DefaultListModel;
+import java.util.regex.Pattern;
 import javax.swing.JFrame;
-import javax.swing.JWindow;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
+import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
+import org.jdesktop.swingx.decorator.Filter;
+import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterPipeline;
+import org.jdesktop.swingx.decorator.PatternFilter;
 
 /**
  *
@@ -31,6 +42,10 @@ public class ItemListForm extends javax.swing.JPanel {
     private BindingContext context = new BindingContext();
     
     private JFrame detailPopup = new JFrame();
+    
+    final String[] colNames = new String[] {
+        "ItemID", "Type", "Title", "SubTitle", "StartTime", "Price", "BidCount", "EndTime","Shipping"};
+    
     
     /** Creates new form ItemListForm */
     public ItemListForm() {
@@ -51,6 +66,68 @@ public class ItemListForm extends javax.swing.JPanel {
             public void mouseReleased(MouseEvent e) {
             }
         });
+        final PatternFilter patternFilter = new PatternFilter();
+        patternFilter.setColumnIndex(2);
+        filterTextField.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) {
+                try {
+                    patternFilter.setPattern(Pattern.compile(filterTextField.getText()));
+                } catch (Exception e1) {
+                }
+            }
+            
+            public void keyPressed(KeyEvent e) {
+            }
+            
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+        tblResults.setFilters(new FilterPipeline(new Filter[]{patternFilter}));
+        
+        HighlighterPipeline highlighter = new HighlighterPipeline();
+        highlighter.addHighlighter(new AlternateRowHighlighter());
+        tblResults.setHighlighters(highlighter);
+        TableModel dataModel = new AbstractTableModel() {
+            public int getColumnCount() {
+                return colNames.length;
+            }
+            
+            public int getRowCount() {
+                return 0;
+            }
+            
+            public String getColumnName(int columnIndex) {
+                return colNames[columnIndex];
+            }
+            
+            public Object getValueAt(int row, int col) {
+                return "";
+            }
+        };
+        
+        tblResults.setModel(dataModel);
+        
+    }
+    
+    private String[] itemToColumns(ItemType item) {
+        String[] cols = new String[colNames.length];
+        int i = 0;
+        cols[i++] = item.getItemID().toString();
+        cols[i++] = item.getListingType().toString();
+        cols[i++] = item.getTitle();
+        cols[i++] = item.getSubTitle() == null ? "" : item.getSubTitle();
+        
+        ListingDetailsType dtl = item.getListingDetails();
+        cols[i++] = eBayUtil.toAPITimeString(dtl.getStartTime().getTime());
+        
+        cols[i++] = (new Double(item.getSellingStatus().getCurrentPrice().getValue())).toString();
+        cols[i++] = item.getSellingStatus().getBidCount().toString();
+        cols[i++] = eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
+        if (item.getShippingDetails() != null && item.getShippingDetails().getDefaultShippingCost() != null)
+            cols[i++] = item.getShippingDetails().getDefaultShippingCost().getValue()+"";
+        else
+            cols[i++] = "";
+        return cols;
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -59,13 +136,13 @@ public class ItemListForm extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblResults = new org.jdesktop.swingx.JXTable();
+        filterTextField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         jLabel1.setText("Search for:");
 
@@ -76,6 +153,18 @@ public class ItemListForm extends javax.swing.JPanel {
             }
         });
 
+        tblResults.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(tblResults);
+
+        jLabel2.setText("Title Filter:");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,11 +172,15 @@ public class ItemListForm extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(jLabel1)
-                        .add(16, 16, 16)
-                        .add(txtSearch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel1)
+                            .add(jLabel2))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, filterTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtSearch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSearch)))
                 .addContainerGap())
@@ -98,10 +191,14 @@ public class ItemListForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
-                    .add(txtSearch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(btnSearch))
+                    .add(btnSearch)
+                    .add(txtSearch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(filterTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel2))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -112,12 +209,32 @@ public class ItemListForm extends javax.swing.JPanel {
         
         try {
             criteria.setQuery(txtSearch.getText());
-            List<AuctionItem> results = ebaySearch.findItems(criteria);
-            DefaultListModel model = new DefaultListModel();
-            for (AuctionItem item : results) {
-                model.addElement(item);
-            }
-            jList1.setModel(model);
+            final List<AuctionItem> results = ebaySearch.findItems(criteria);
+            TableModel dataModel = new AbstractTableModel() {
+                public int getColumnCount() {
+                    return colNames.length;
+                }
+                
+                public int getRowCount() {
+                    return results.size();
+                }
+                
+                public String getColumnName(int columnIndex) {
+                    return colNames[columnIndex];
+                }
+                
+                public Object getValueAt(int row, int col) {
+                    ItemType item = results.get(row).getItem();
+                    return itemToColumns(item)[col];
+                }
+            };
+            
+            tblResults.setModel(dataModel);
+//            DefaultListModel model = new DefaultListModel();
+//            for (AuctionItem item : results) {
+//                model.addElement(item);
+//            }
+//            jList1.setModel(model);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -127,34 +244,38 @@ public class ItemListForm extends javax.swing.JPanel {
         context.addDescription(new BindingDescription(criteria, "query",txtSearch, "text"));
         context.bind();
         
-        jList1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                detailPopup = new JFrame();
-                //detailPopup.add(new JLabel("asdfsdf"),BorderLayout.CENTER);
-                
-                String itemID = ((AuctionItem)jList1.getSelectedValue()).getItem().getItemID().getValue();
-                AuctionItem item;
-                try {
-                    item = new EbayItemAdapter().getItemDetails(itemID);
-                    //item = (AuctionItem)jList1.getSelectedValue();
-                    detailPopup.add(new AuctionForm((item)),BorderLayout.CENTER);
-                    detailPopup.setSize(getWidth()+50,getHeight()+50);
-                    detailPopup.setLocationRelativeTo(jList1);
-                    detailPopup.setVisible(true);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                
-            }
-        });
+//        jList1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//            public void valueChanged(ListSelectionEvent e) {
+//                detailPopup = new JFrame();
+//                //detailPopup.add(new JLabel("asdfsdf"),BorderLayout.CENTER);
+//
+//                String itemID = ((AuctionItem)jList1.getSelectedValue()).getItem().getItemID().getValue();
+//                AuctionItem item;
+//                try {
+//                    item = new EbayItemAdapter().getItemDetails(itemID);
+//                    //item = (AuctionItem)jList1.getSelectedValue();
+//                    detailPopup.add(new AuctionForm((item)),BorderLayout.CENTER);
+//                    detailPopup.setSize(getWidth()+50,getHeight()+50);
+//                    detailPopup.setLocationRelativeTo(jList1);
+//                    detailPopup.setVisible(true);
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//
+//            }
+//        });
+        
+        
     }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
+    private javax.swing.JTextField filterTextField;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList jList1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane2;
+    private org.jdesktop.swingx.JXTable tblResults;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
     
