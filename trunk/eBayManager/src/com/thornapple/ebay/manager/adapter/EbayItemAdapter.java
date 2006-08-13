@@ -95,12 +95,19 @@ public class EbayItemAdapter {
             pst.setMaxDistance(criteria.getMaximumDistance());
             api.setProximitySearch(pst);
         }
-        if (criteria.getMaximumPrice() > 0){
+        if (criteria.getMaximumPrice() > 0 || criteria.getMinimumPrice() > 0){
             PriceRangeFilterType priceRange = new PriceRangeFilterType();
             priceRange.setMinPrice(new AmountType(criteria.getMinimumPrice()));
             priceRange.setMaxPrice(new AmountType(criteria.getMaximumPrice()));
             api.setPriceRangeFilter(priceRange);
             filterTotalCost = criteria.isUseTotalPrice();
+        }
+        
+        if (criteria.getMaximumDistance() > 0){
+            ProximitySearchType pst = new ProximitySearchType();
+            pst.setPostalCode(criteria.getZipCode());
+            pst.setMaxDistance(criteria.getMaximumDistance());
+            api.setProximitySearch(pst);
         }
         
         SearchResultItemType[] _temp = api.getSearchResults();

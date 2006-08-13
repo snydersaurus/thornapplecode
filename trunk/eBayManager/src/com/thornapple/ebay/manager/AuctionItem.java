@@ -10,6 +10,8 @@
 package com.thornapple.ebay.manager;
 
 import com.ebay.soap.eBLBaseComponents.ItemType;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  *
@@ -18,6 +20,8 @@ import com.ebay.soap.eBLBaseComponents.ItemType;
 public class AuctionItem {
     
     private ItemType item;
+    
+    private boolean starred;
     
     private boolean shippingCostAvailable;
     
@@ -39,9 +43,30 @@ public class AuctionItem {
         this.shippingCostAvailable = shippingCostAvailable;
     }
     
+    public boolean isStarred() {
+        return starred;
+    }
+    
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
+    
     
     public double getCurrentPrice(){
-        return item.getSellingStatus().getCurrentPrice().getValue();
+        BigDecimal result =
+                new BigDecimal(item.getSellingStatus().getCurrentPrice().getValue());
+        result.setScale(2, RoundingMode.HALF_UP);
+        return result.doubleValue();
+    }
+    
+    public double getShippingCost(){
+        if (item.getShippingDetails() != null && item.getShippingDetails().getDefaultShippingCost() != null){
+            BigDecimal result =
+                    new BigDecimal(item.getShippingDetails().getDefaultShippingCost().getValue());
+            result.setScale(2, RoundingMode.HALF_UP);
+            return result.doubleValue();
+        } else
+            return (Double)null;
     }
     
     public double getTotalCost(){
@@ -49,15 +74,14 @@ public class AuctionItem {
             setShippingCostAvailable(false);
             return item.getSellingStatus().getCurrentPrice().getValue() +
                     item.getShippingDetails().getDefaultShippingCost().getValue();
-        }
-        else
+        } else
             return item.getSellingStatus().getCurrentPrice().getValue();
     }
     
     public String toString(){
         return item.getItemID() + " | "+ item.getTitle() + " | " + getCurrentPrice() + " | " + getTotalCost();
     }
-
+    
     String getID() {
         return item.getItemID().getValue();
     }

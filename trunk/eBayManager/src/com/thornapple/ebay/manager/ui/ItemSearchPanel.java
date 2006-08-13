@@ -7,6 +7,7 @@
 package com.thornapple.ebay.manager.ui;
 
 import binding.BindingContext;
+import binding.BindingConverter;
 import binding.BindingDescription;
 import binding.swing.SwingBindingSupport;
 import com.thornapple.ebay.manager.ItemSearchCriteria;
@@ -27,7 +28,7 @@ public class ItemSearchPanel extends javax.swing.JPanel {
         SwingBindingSupport.register();
     }
     
-     /** Creates new form ItemSearchPanel */
+    /** Creates new form ItemSearchPanel */
     public ItemSearchPanel(ItemSearchCriteria criteria) {
         this.criteria = criteria;
         SwingBindingSupport.register();
@@ -149,29 +150,74 @@ public class ItemSearchPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtZip;
     // End of variables declaration//GEN-END:variables
-
+    
     public ItemSearchCriteria getCriteria() {
         return criteria;
     }
-
+    
     public void setCriteria(ItemSearchCriteria criteria) {
         this.criteria = criteria;
         context.unbind();
         bindComponents();
     }
-
+    
     private void bindComponents() {
         context.addDescription(new BindingDescription(criteria,"query",txtSearch,"text"));
         context.addDescription(new BindingDescription(criteria,"useDescription",cbSearchDescription,"selected"));
-        //context.addDescription(new BindingDescription(criteria,"maximumDistance",txtMiles,"text"));
+        BindingDescription maxDistanceDescription = new BindingDescription(criteria,"maximumDistance",txtMiles,"text");
+        maxDistanceDescription.setConverter(new DistanceConverter());
+        context.addDescription(maxDistanceDescription);
         context.addDescription(new BindingDescription(criteria,"zipCode",txtZip,"text"));
-        //context.addDescription(new BindingDescription(criteria,"minimumPrice",txtMinPrice,"text"));
-        //context.addDescription(new BindingDescription(criteria,"maximumPrice",txtMaxPrice,"text"));
+        BindingDescription minPriceDescription = new BindingDescription(criteria,"minimumPrice",txtMinPrice,"text");
+        minPriceDescription.setConverter(new PriceConverter());
+        context.addDescription(minPriceDescription);
+        BindingDescription maxPriceDescription = new BindingDescription(criteria,"maximumPrice",txtMaxPrice,"text");
+        maxPriceDescription.setConverter(new PriceConverter());
+        context.addDescription(maxPriceDescription);
         context.bind();
     }
     
     public void commit(){
-       context.commitUncommittedValues();
+        context.commitUncommittedValues();
     }
     
+    private static class PriceConverter extends BindingConverter {
+        public Object convertToTarget(BindingDescription description,
+                Object value) {
+            
+            if (((Double)value).doubleValue() == 0)
+                return "";
+            else
+                return value.toString();
+        }
+        
+        public Object convertToSource(BindingDescription description,
+                Object value) {
+            if (value != null && ((String)value).length() > 0)
+                return (new Double((String)value)).doubleValue();
+            else
+                return 0;
+            
+        }
+    }
+    
+     private static class DistanceConverter extends BindingConverter {
+        public Object convertToTarget(BindingDescription description,
+                Object value) {
+            
+            if (((Integer)value).intValue() == 0)
+                return "";
+            else
+                return value.toString();
+        }
+        
+        public Object convertToSource(BindingDescription description,
+                Object value) {
+            if (value != null && ((String)value).length() > 0)
+                return (new Integer((String)value)).intValue();
+            else
+                return 0;
+            
+        }
+    }
 }
