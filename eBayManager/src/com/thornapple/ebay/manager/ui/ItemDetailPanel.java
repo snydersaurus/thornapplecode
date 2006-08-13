@@ -10,10 +10,10 @@ package com.thornapple.ebay.manager.ui;
  *
  * @author  Bill
  */
-public class ItemCellRenderer extends javax.swing.JPanel {
+public class ItemDetailPanel extends javax.swing.JPanel {
     
     /** Creates new form ItemCellRenderer */
-    public ItemCellRenderer() {
+    public ItemDetailPanel() {
         initComponents();
     }
     

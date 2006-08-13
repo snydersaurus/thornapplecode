@@ -8,16 +8,19 @@ package com.thornapple.ebay.manager;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import ca.odell.glazedlists.gui.WritableTableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.ebay.sdk.util.eBayUtil;
 import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.ebay.soap.eBLBaseComponents.ListingDetailsType;
-import com.thornapple.ebay.manager.adapter.EbayItemAdapter;
+import com.thornapple.ebay.manager.action.FindItemsAction;
+import com.thornapple.ebay.manager.ui.MatcherFactory;
 import java.util.Comparator;
-import java.util.List;
 import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
 import org.jdesktop.swingx.decorator.HighlighterPipeline;
 import org.jdesktop.swingx.decorator.PatternFilter;
@@ -28,12 +31,21 @@ import org.jdesktop.swingx.decorator.PatternFilter;
  */
 public class EbayManager extends javax.swing.JFrame {
     
+    /*The main event list. Drives everything we do here in the manager.*/
     private EventList itemEventList = new BasicEventList();
+    
+    /*Create a sorted list for the table*/
     private SortedList sortedItems = new SortedList(itemEventList, new AuctionItemComparator());
+    
+    /*Create a list filtered by the ItemFilterPanel*/
+    private FilterList filteredList;
+    
+    /*Create the criteria bean.*/
     private ItemSearchCriteria criteria = new ItemSearchCriteria();
     
+    //table setup
     final String[] colNames = new String[] {
-        "ItemID", "Type", "Title", "SubTitle", "StartTime", "Price", "BidCount", "EndTime","Shipping"};
+        ""," Title", "SubTitle", "Price", "Shipping", "BidCount", "EndTime"};
     
     
     /** Creates new form EbayManager */
@@ -58,10 +70,13 @@ public class EbayManager extends javax.swing.JFrame {
 //        });
 //        tblResults.setFilters(new FilterPipeline(new Filter[]{patternFilter}));
         
+        //table setup
         HighlighterPipeline highlighter = new HighlighterPipeline();
         highlighter.addHighlighter(new AlternateRowHighlighter());
         tblResults.setHighlighters(highlighter);
-        EventTableModel itemTableModel = new EventTableModel(sortedItems, new ItemTableFormat());
+        
+        filteredList = new FilterList(sortedItems,MatcherFactory.getInstance().createMatcher(itemFilterPanel1));
+        EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
         
@@ -122,10 +137,10 @@ public class EbayManager extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(itemSearchPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1)
-                    .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                    .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+                    .add(itemSearchPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1))
+                .add(6, 6, 6)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jLabel2)
@@ -133,12 +148,14 @@ public class EbayManager extends javax.swing.JFrame {
                         .add(jXHyperlink1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jXHyperlink2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 280, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 138, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jComboBox1, 0, 316, Short.MAX_VALUE))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE))
+                        .add(jComboBox1, 0, 174, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -162,24 +179,15 @@ public class EbayManager extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton1)
                         .add(21, 21, 21)
-                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 205, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        EbayItemAdapter ebaySearch = new EbayItemAdapter();
-        
-        try {
-            itemSearchPanel.commit();
-            final List<AuctionItem> results = ebaySearch.findItems(criteria);
-            itemEventList.clear();
-            itemEventList.addAll(results);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-// TODO add your handling code here:
+        itemSearchPanel.commit();
+        new FindItemsAction(itemEventList,criteria).actionPerformed(null);
     }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
@@ -220,7 +228,61 @@ public class EbayManager extends javax.swing.JFrame {
         }
     }
     
-    class ItemTableFormat implements TableFormat {
+      class AuctionItemTextComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            AuctionItem itemA = (AuctionItem)a;
+            AuctionItem itemB = (AuctionItem)b;
+            
+            //initially sort by cost, lower is more important
+            double itemAValue = itemA.getCurrentPrice();
+            double itemBValue = itemB.getCurrentPrice();
+            
+            return new Double(itemAValue - itemBValue).intValue();
+        }
+    }
+      
+     class AuctionItemDateComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            AuctionItem itemA = (AuctionItem)a;
+            AuctionItem itemB = (AuctionItem)b;
+            
+            //initially sort by cost, lower is more important
+            double itemAValue = itemA.getCurrentPrice();
+            double itemBValue = itemB.getCurrentPrice();
+            
+            return new Double(itemAValue - itemBValue).intValue();
+        }
+    }
+     
+      class AuctionItemCostComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            
+            double itemAValue = 0;
+            double itemBValue = 0;
+            
+            if ((a == null || ((String)a).length() == 0))
+                itemAValue = 0;
+            else
+                itemAValue = new Double((String) a);
+            
+            if ((b == null || ((String)b).length() == 0))
+                itemBValue = 0;
+            else
+                itemBValue = new Double((String) b);
+
+            Double result = itemBValue - itemAValue;
+            
+            if (result > 0)
+                return -1;
+            else if (result < 0)
+                return 1;
+            else
+                return 0;
+            
+        }
+    }
+    
+    class ItemTableFormat implements AdvancedTableFormat, WritableTableFormat  {
         
         public int getColumnCount() {
             return colNames.length;
@@ -231,21 +293,48 @@ public class EbayManager extends javax.swing.JFrame {
         }
         
         public Object getColumnValue(Object baseObject, int column) {
-            ItemType item = ((AuctionItem)baseObject).getItem();
+            AuctionItem auctionItem = (AuctionItem)baseObject;
+            ItemType item = auctionItem.getItem();
             ListingDetailsType dtl = item.getListingDetails();
             
-            if (column == 0) return item.getItemID().toString();
-            else if (column == 1) return item.getListingType().toString();
-            else if (column == 2) return item.getTitle();
-            else if (column == 3) return item.getSubTitle() == null ? "" : item.getSubTitle();
-            else if (column == 4) return eBayUtil.toAPITimeString(dtl.getStartTime().getTime());
-            else if (column == 5) return (new Double(item.getSellingStatus().getCurrentPrice().getValue())).toString();
-            else if (column == 6) return item.getSellingStatus().getBidCount().toString();
-            else if (column == 7) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
-            else if (item.getShippingDetails() != null && item.getShippingDetails().getDefaultShippingCost() != null)
-                return item.getShippingDetails().getDefaultShippingCost().getValue()+"";
+            if (column == 0) return auctionItem.isStarred();
+            else if (column == 1) return item.getTitle();
+            else if (column == 2) return item.getSubTitle() == null ? "" : item.getSubTitle();
+            else if (column == 3) return auctionItem.getCurrentPrice();
+            else if (column == 4 && auctionItem.isShippingCostAvailable()) return auctionItem.getShippingCost();
+            else if (column == 5) return item.getSellingStatus().getBidCount().toString();
+            else if (column == 6) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
             else
                 return "";
+        }
+        
+        public Class getColumnClass(int i) {
+            if (i == 0)
+                return Boolean.class;
+            else
+                return String.class;
+        }
+        
+        public Comparator getColumnComparator(int column) {
+            if (column == 0) return GlazedLists.booleanComparator();
+            else if (column == 1) return GlazedLists.caseInsensitiveComparator();
+            else if (column == 2) return GlazedLists.caseInsensitiveComparator();
+            else if (column == 3) return new AuctionItemCostComparator();
+            else if (column == 4) return new AuctionItemCostComparator();
+            else if (column == 5) return GlazedLists.comparableComparator();
+            else if (column == 6) return GlazedLists.comparableComparator();
+            else return GlazedLists.caseInsensitiveComparator();
+        }
+
+        public boolean isEditable(Object o, int i) {
+            if (i == 0) return true;
+            else return false;
+        }
+
+        public Object setColumnValue(Object baseObject, Object editedObject, int i ) {
+            if ( i == 0 )
+                ((AuctionItem)baseObject).setStarred( (Boolean)editedObject );
+            return baseObject;
         }
     }
     
