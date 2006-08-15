@@ -75,7 +75,9 @@ public class EbayManager extends javax.swing.JFrame {
         highlighter.addHighlighter(new AlternateRowHighlighter());
         tblResults.setHighlighters(highlighter);
         
-        filteredList = new FilterList(sortedItems,MatcherFactory.getInstance().createMatcher(itemFilterPanel1));
+        MatcherFactory matcherFactory = MatcherFactory.getInstance();
+        filteredList = new FilterList(sortedItems,matcherFactory.createMatcher(itemEventList,itemFilterPanel1));
+        
         EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
@@ -228,7 +230,7 @@ public class EbayManager extends javax.swing.JFrame {
         }
     }
     
-      class AuctionItemTextComparator implements Comparator {
+    class AuctionItemTextComparator implements Comparator {
         public int compare(Object a, Object b) {
             AuctionItem itemA = (AuctionItem)a;
             AuctionItem itemB = (AuctionItem)b;
@@ -240,8 +242,8 @@ public class EbayManager extends javax.swing.JFrame {
             return new Double(itemAValue - itemBValue).intValue();
         }
     }
-      
-     class AuctionItemDateComparator implements Comparator {
+    
+    class AuctionItemDateComparator implements Comparator {
         public int compare(Object a, Object b) {
             AuctionItem itemA = (AuctionItem)a;
             AuctionItem itemB = (AuctionItem)b;
@@ -253,23 +255,31 @@ public class EbayManager extends javax.swing.JFrame {
             return new Double(itemAValue - itemBValue).intValue();
         }
     }
-     
-      class AuctionItemCostComparator implements Comparator {
+    
+    class AuctionItemCostComparator implements Comparator {
         public int compare(Object a, Object b) {
             
             double itemAValue = 0;
             double itemBValue = 0;
             
-            if ((a == null || ((String)a).length() == 0))
+            if (a == null)
                 itemAValue = 0;
+            else if (a instanceof String && ((String)a).length() > 0)
+                itemAValue = new Double((String)a);
+            else if (a instanceof Double)
+                itemAValue = (Double)a;
             else
-                itemAValue = new Double((String) a);
+                itemAValue = 0;
             
-            if ((b == null || ((String)b).length() == 0))
+            if (b == null)
                 itemBValue = 0;
+            else if (b instanceof String && ((String)b).length() > 0)
+                itemAValue = new Double((String)b);
+            else if (b instanceof Double)
+                itemBValue = (Double)b;
             else
-                itemBValue = new Double((String) b);
-
+                itemBValue = 0;
+            
             Double result = itemBValue - itemAValue;
             
             if (result > 0)
@@ -325,12 +335,12 @@ public class EbayManager extends javax.swing.JFrame {
             else if (column == 6) return GlazedLists.comparableComparator();
             else return GlazedLists.caseInsensitiveComparator();
         }
-
+        
         public boolean isEditable(Object o, int i) {
             if (i == 0) return true;
             else return false;
         }
-
+        
         public Object setColumnValue(Object baseObject, Object editedObject, int i ) {
             if ( i == 0 )
                 ((AuctionItem)baseObject).setStarred( (Boolean)editedObject );

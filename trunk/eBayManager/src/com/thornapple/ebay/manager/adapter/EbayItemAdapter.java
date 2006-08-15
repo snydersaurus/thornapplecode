@@ -115,7 +115,7 @@ public class EbayItemAdapter {
         AuctionItem item = null;
         for (int i = 0; i < _temp.length; i++) {
             item = new AuctionItem(_temp[i].getItem());
-            System.out.println(item);
+
             if (filterTotalCost) {
                 if (item.getTotalCost() <= criteria.getMaximumPrice())
                     results.add(item);

@@ -6,6 +6,23 @@
 
 package com.thornapple.ebay.manager.ui;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.TransformedList;
+import ca.odell.glazedlists.UniqueList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
+import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.swing.EventListModel;
+import ca.odell.glazedlists.swing.EventSelectionModel;
+import com.thornapple.ebay.manager.AuctionItem;
+import com.thornapple.ebay.manager.ItemsToLabelsList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -14,9 +31,16 @@ import javax.swing.text.JTextComponent;
  */
 public class ItemFilterPanel extends javax.swing.JPanel {
     
+    EventList itemEventList;
     /** Creates new form ItemFilterPanel */
     public ItemFilterPanel() {
         initComponents();
+    }
+    
+    public ItemFilterPanel(EventList itemEventList){
+        this.itemEventList = itemEventList;
+        initComponents();
+        initComponentModel();
     }
     
     public JTextComponent getTitleComponent(){
@@ -58,11 +82,6 @@ public class ItemFilterPanel extends javax.swing.JPanel {
 
         jLabel3.setText("Labels");
 
-        jXList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(jXList1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -131,6 +150,22 @@ public class ItemFilterPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void initComponentModel() {
+        EventList labelsNonUnique = new ItemsToLabelsList(itemEventList);
+        UniqueList labelsEventList = new UniqueList(labelsNonUnique);
+        EventListModel labelListModel = new EventListModel(labelsEventList);
+        jXList1.setModel(labelListModel);
+    }
+    
+    public void setEventList(EventList itemEventList){
+        this.itemEventList = itemEventList;
+        initComponentModel();
+    }
+    
+    JList getLabelListComponent() {
+        return jXList1;
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
