@@ -12,6 +12,8 @@ package com.thornapple.ebay.manager;
 import com.ebay.soap.eBLBaseComponents.ItemType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -21,14 +23,19 @@ public class AuctionItem {
     
     private ItemType item;
     
+    private String id;
+    
     private boolean starred;
     
     private boolean shippingCostAvailable;
+    
+    private List labels = new ArrayList();
     
     
     /** Creates a new instance of AuctionItem */
     public AuctionItem(ItemType item) {
         this.item = item;
+        this.id = item.getItemID().getValue();
     }
     
     public ItemType getItem() {
@@ -49,8 +56,17 @@ public class AuctionItem {
     
     public void setStarred(boolean starred) {
         this.starred = starred;
+        if (starred) labels.add("Starred");
     }
     
+    
+    public List getLabels() {
+        return labels;
+    }
+    
+    public void setLabels(List labels) {
+        this.labels = labels;
+    }
     
     public double getCurrentPrice(){
         BigDecimal result =
@@ -83,6 +99,14 @@ public class AuctionItem {
     }
     
     String getID() {
-        return item.getItemID().getValue();
+        return id;
+    }
+    
+    public void addLabel(String label){
+        this.labels.add(label);
+    }
+    
+    public void removeLabel(String label){
+        this.labels.remove(label);
     }
 }
