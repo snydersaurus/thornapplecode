@@ -12,8 +12,8 @@ package com.thornapple.ebay.manager.ui;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.CollectionList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.TextFilterator;
 import ca.odell.glazedlists.UniqueList;
-import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -53,16 +54,25 @@ public class MatcherFactory {
         TextComponentMatcherEditor titleMatcher =
                 new TextComponentMatcherEditor(panel.getTitleComponent(),new ItemTextFilter());
         
+        TextComponentMatcherEditor minPriceMatcher =
+                new PriceMatcherEditor(panel.getMinPriceComponent(),new ItemPriceFilter(),PriceMatcherEditor.Mode.MINIMUM);
+        
+        TextComponentMatcherEditor maxPriceMatcher =
+                new PriceMatcherEditor(panel.getMaxPriceComponent(),new ItemPriceFilter(),PriceMatcherEditor.Mode.MAXIMUM);
+        
         LabelsSelectMatcher labelsMatcher =
                 new LabelsSelectMatcher(source,panel.getLabelListComponent());
         
         EventList matchers = new BasicEventList();
         matchers.add(titleMatcher);
         matchers.add(labelsMatcher);
+        matchers.add(maxPriceMatcher);
+        matchers.add(minPriceMatcher);
         
-        CompositeMatcherEditor matcher = 
+        CompositeMatcherEditor matcher =
                 new CompositeMatcherEditor(matchers);
         matcher.setMode(CompositeMatcherEditor.AND);
+        
         
         return matcher;//new TextComponentMatcherEditor(panel.getTitleComponent(),new ItemTextFilter());
     }
@@ -121,8 +131,8 @@ public class MatcherFactory {
          */
         public LabelsSelectMatcher(EventList source, JList list) {
             // derive the users list from the issues list
-            CollectionList<AuctionItem, String> labelsNonUnique = 
-                    new CollectionList<AuctionItem, String>(source, new ItemsToLabelsModel()); 
+            CollectionList<AuctionItem, String> labelsNonUnique =
+                    new CollectionList<AuctionItem, String>(source, new ItemsToLabelsModel());
             //EventList labelsNonUnique = new ItemsToLabelsList(source);
             labelsEventList = new UniqueList(labelsNonUnique);
             
@@ -147,6 +157,7 @@ public class MatcherFactory {
         public void valueChanged(ListSelectionEvent e) {
             Matcher newMatcher = new LabelsForItemsMatcher(labelsSelectedList);
             fireChanged(newMatcher);
+            
         }
     }
     
