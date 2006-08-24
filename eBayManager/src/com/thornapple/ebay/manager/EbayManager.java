@@ -77,9 +77,6 @@ public class EbayManager extends javax.swing.JFrame {
 //        tblResults.setFilters(new FilterPipeline(new Filter[]{patternFilter}));
         
         //table setup
-        HighlighterPipeline highlighter = new HighlighterPipeline();
-        highlighter.addHighlighter(new AlternateRowHighlighter());
-        tblResults.setHighlighters(highlighter);
         
         MatcherFactory matcherFactory = MatcherFactory.getInstance();
         filteredList = new FilterList(sortedItems,matcherFactory.createMatcher(itemEventList,itemFilterPanel1));
@@ -87,6 +84,7 @@ public class EbayManager extends javax.swing.JFrame {
         EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
+        
         
         jButton1.setUI(new ThButtonUI());
         //itemSearchPanel.setUI(new ThPanelUI());
@@ -111,6 +109,9 @@ public class EbayManager extends javax.swing.JFrame {
         itemFilterPanel1 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblResults = new org.jdesktop.swingx.JXTable();
+        HighlighterPipeline highlighter = new HighlighterPipeline();
+        highlighter.addHighlighter(new AlternateRowHighlighter());
+        tblResults.setHighlighters(highlighter);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(java.awt.Color.white);
