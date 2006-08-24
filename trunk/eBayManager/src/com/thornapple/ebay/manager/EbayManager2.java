@@ -6,6 +6,13 @@
 
 package com.thornapple.ebay.manager;
 
+import com.elevenworks.swing.border.BrushedMetalBevelBorder;
+import com.elevenworks.swing.panel.BrushedMetalScrollPaneUI;
+import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
+import com.elevenworks.swing.panel.TigerInfoPanelUI;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+
 /**
  *
  * @author  Bill
@@ -14,6 +21,11 @@ public class EbayManager2 extends javax.swing.JFrame {
     
     /** Creates new form EbayManager2 */
     public EbayManager2() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception exc) {
+            // Do nothing...
+        }
         initComponents();
     }
     
@@ -24,19 +36,108 @@ public class EbayManager2 extends javax.swing.JFrame {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        ebayBuyerPanel1 = new com.thornapple.ebay.manager.ui.EbayBuyerPanel();
+        brushedMetalPanel1 = new com.elevenworks.swing.panel.BrushedMetalPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane1.setUI(new BrushedMetalSplitPaneUI());
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jSplitPane2.setUI(new BrushedMetalSplitPaneUI());
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jXTable1 = new org.jdesktop.swingx.JXTable();
+        simpleGradientPanel2 = new com.elevenworks.swing.panel.SimpleGradientPanel();
+        itemDetailPanel1 = new com.thornapple.ebay.manager.ui.ItemDetailPanel();
+        itemDetailPanel1.setUI(new TigerInfoPanelUI());
+        //itemDetailPanel1.setBorder(new EmptyBorder(10,10,10,10));
+        jXPanel1 = new org.jdesktop.swingx.JXPanel();
+        itemFilterPanel1 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane1.setUI(new BrushedMetalScrollPaneUI());
+        jScrollPane1.setBorder(new BrushedMetalBevelBorder("Filters"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jSplitPane1.setDividerLocation(350);
+        jSplitPane1.setOpaque(false);
+        jSplitPane2.setDividerLocation(200);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setOpaque(false);
+        jXTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jXTable1);
+
+        jSplitPane2.setLeftComponent(jScrollPane2);
+
+        org.jdesktop.layout.GroupLayout simpleGradientPanel2Layout = new org.jdesktop.layout.GroupLayout(simpleGradientPanel2);
+        simpleGradientPanel2.setLayout(simpleGradientPanel2Layout);
+        simpleGradientPanel2Layout.setHorizontalGroup(
+            simpleGradientPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
+        );
+        simpleGradientPanel2Layout.setVerticalGroup(
+            simpleGradientPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+        );
+        jSplitPane2.setRightComponent(simpleGradientPanel2);
+
+        jSplitPane1.setRightComponent(jSplitPane2);
+
+        jXPanel1.setOpaque(false);
+        itemFilterPanel1.setOpaque(false);
+
+        jScrollPane1.setOpaque(false);
+
+        org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
+        jXPanel1.setLayout(jXPanel1Layout);
+        jXPanel1Layout.setHorizontalGroup(
+            jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jXPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jXPanel1Layout.setVerticalGroup(
+            jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jXPanel1Layout.createSequentialGroup()
+                .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jXPanel1Layout.createSequentialGroup()
+                        .add(176, 176, 176)
+                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
+                    .add(jXPanel1Layout.createSequentialGroup()
+                        .add(227, 227, 227)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jSplitPane1.setLeftComponent(jXPanel1);
+
+        org.jdesktop.layout.GroupLayout brushedMetalPanel1Layout = new org.jdesktop.layout.GroupLayout(brushedMetalPanel1);
+        brushedMetalPanel1.setLayout(brushedMetalPanel1Layout);
+        brushedMetalPanel1Layout.setHorizontalGroup(
+            brushedMetalPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
+        );
+        brushedMetalPanel1Layout.setVerticalGroup(
+            brushedMetalPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+        );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(ebayBuyerPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+            .add(brushedMetalPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(ebayBuyerPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
+            .add(brushedMetalPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -53,7 +154,16 @@ public class EbayManager2 extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.thornapple.ebay.manager.ui.EbayBuyerPanel ebayBuyerPanel1;
+    private com.elevenworks.swing.panel.BrushedMetalPanel brushedMetalPanel1;
+    private com.thornapple.ebay.manager.ui.ItemDetailPanel itemDetailPanel1;
+    private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
+    private org.jdesktop.swingx.JXPanel jXPanel1;
+    private org.jdesktop.swingx.JXTable jXTable1;
+    private com.elevenworks.swing.panel.SimpleGradientPanel simpleGradientPanel2;
     // End of variables declaration//GEN-END:variables
     
 }
