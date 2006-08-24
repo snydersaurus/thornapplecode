@@ -64,16 +64,16 @@ public class EbayManager2 extends javax.swing.JFrame {
         initComponents();
         
         MatcherFactory matcherFactory = MatcherFactory.getInstance();
-        filteredList = new FilterList(sortedItems,matcherFactory.createMatcher(itemEventList,itemFilterPanel2));
+        filteredList = new FilterList(sortedItems,matcherFactory.createMatcher(itemEventList,itemFilterPanel1));
         
-        EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
+        final EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
      
         tblResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 if (e.getFirstIndex() < 0) return;
-                itemDetailPanel1.setItem((AuctionItem) filteredList.get(e.getFirstIndex()));
+                itemDetailPanel1.setItem((AuctionItem) itemTableModel.getElementAt(e.getFirstIndex()));
             }
         });
     }
@@ -89,11 +89,10 @@ public class EbayManager2 extends javax.swing.JFrame {
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane1.setUI(new BrushedMetalSplitPaneUI());
         jXPanel1 = new org.jdesktop.swingx.JXPanel();
-        itemFilterPanel1 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane1.setUI(new BrushedMetalScrollPaneUI());
         jScrollPane1.setBorder(new BrushedMetalBevelBorder("Filters"));
-        itemFilterPanel2 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
+        itemFilterPanel1 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane3.setUI(new BrushedMetalScrollPaneUI());
         jScrollPane3.setBorder(new BrushedMetalBevelBorder("Search"));
@@ -118,10 +117,8 @@ public class EbayManager2 extends javax.swing.JFrame {
         jSplitPane1.setDividerLocation(350);
         jSplitPane1.setOpaque(false);
         jXPanel1.setOpaque(false);
-        itemFilterPanel1.setOpaque(false);
-
         jScrollPane1.setOpaque(false);
-        jScrollPane1.setViewportView(itemFilterPanel2);
+        jScrollPane1.setViewportView(itemFilterPanel1);
 
         jScrollPane3.setViewportView(itemSearchPanel1);
 
@@ -136,30 +133,23 @@ public class EbayManager2 extends javax.swing.JFrame {
         jXPanel1.setLayout(jXPanel1Layout);
         jXPanel1Layout.setHorizontalGroup(
             jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jXPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
+                .add(16, 16, 16)
                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                     .add(jButton1))
                 .addContainerGap())
         );
         jXPanel1Layout.setVerticalGroup(
             jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jXPanel1Layout.createSequentialGroup()
-                .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jXPanel1Layout.createSequentialGroup()
-                        .add(176, 176, 176)
-                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 33, Short.MAX_VALUE)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jSplitPane1.setLeftComponent(jXPanel1);
@@ -266,7 +256,6 @@ public class EbayManager2 extends javax.swing.JFrame {
     private com.elevenworks.swing.panel.BrushedMetalPanel brushedMetalPanel1;
     private com.thornapple.ebay.manager.ui.ItemDetailPanel itemDetailPanel1;
     private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel1;
-    private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel2;
     private com.thornapple.ebay.manager.ui.ItemSearchPanel itemSearchPanel1;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
