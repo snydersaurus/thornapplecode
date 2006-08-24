@@ -6,18 +6,53 @@
 
 package com.thornapple.ebay.manager;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import ca.odell.glazedlists.gui.WritableTableFormat;
+import ca.odell.glazedlists.swing.EventTableModel;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.ebay.sdk.util.eBayUtil;
+import com.ebay.soap.eBLBaseComponents.ItemType;
+import com.ebay.soap.eBLBaseComponents.ListingDetailsType;
 import com.elevenworks.swing.border.BrushedMetalBevelBorder;
 import com.elevenworks.swing.panel.BrushedMetalScrollPaneUI;
 import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
 import com.elevenworks.swing.panel.TigerInfoPanelUI;
+import com.elevenworks.swing.util.ColorUtil;
+import com.thornapple.ebay.manager.action.FindItemsAction;
+import com.thornapple.ebay.manager.ui.MatcherFactory;
+import java.util.Comparator;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
+import org.jdesktop.swingx.decorator.HighlighterPipeline;
 
 /**
  *
  * @author  Bill
  */
 public class EbayManager2 extends javax.swing.JFrame {
+    
+    /*The main event list. Drives everything we do here in the manager.*/
+    private EventList itemEventList = new BasicEventList();
+    
+    /*Create a sorted list for the table*/
+    private SortedList sortedItems = new SortedList(itemEventList, new AuctionItemComparator());
+    
+    /*Create a list filtered by the ItemFilterPanel*/
+    private FilterList filteredList;
+    
+    /*Create the criteria bean.*/
+    private ItemSearchCriteria criteria = new ItemSearchCriteria();
+    
+    //table setup
+    final String[] colNames = new String[] {
+        ""," Title", "SubTitle", "Price", "Shipping", "BidCount", "EndTime"};
     
     /** Creates new form EbayManager2 */
     public EbayManager2() {
@@ -27,6 +62,20 @@ public class EbayManager2 extends javax.swing.JFrame {
             // Do nothing...
         }
         initComponents();
+        
+        MatcherFactory matcherFactory = MatcherFactory.getInstance();
+        filteredList = new FilterList(sortedItems,matcherFactory.createMatcher(itemEventList,itemFilterPanel2));
+        
+        EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
+        tblResults.setModel(itemTableModel);
+        TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
+     
+        tblResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getFirstIndex() < 0) return;
+                itemDetailPanel1.setItem((AuctionItem) filteredList.get(e.getFirstIndex()));
+            }
+        });
     }
     
     /** This method is called from within the constructor to
@@ -39,59 +88,49 @@ public class EbayManager2 extends javax.swing.JFrame {
         brushedMetalPanel1 = new com.elevenworks.swing.panel.BrushedMetalPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane1.setUI(new BrushedMetalSplitPaneUI());
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jSplitPane2.setUI(new BrushedMetalSplitPaneUI());
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jXTable1 = new org.jdesktop.swingx.JXTable();
-        simpleGradientPanel2 = new com.elevenworks.swing.panel.SimpleGradientPanel();
-        itemDetailPanel1 = new com.thornapple.ebay.manager.ui.ItemDetailPanel();
-        itemDetailPanel1.setUI(new TigerInfoPanelUI());
-        //itemDetailPanel1.setBorder(new EmptyBorder(10,10,10,10));
         jXPanel1 = new org.jdesktop.swingx.JXPanel();
         itemFilterPanel1 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane1.setUI(new BrushedMetalScrollPaneUI());
         jScrollPane1.setBorder(new BrushedMetalBevelBorder("Filters"));
+        itemFilterPanel2 = new com.thornapple.ebay.manager.ui.ItemFilterPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane3.setUI(new BrushedMetalScrollPaneUI());
+        jScrollPane3.setBorder(new BrushedMetalBevelBorder("Search"));
+        itemSearchPanel1 = new com.thornapple.ebay.manager.ui.ItemSearchPanel();
+        itemSearchPanel1.setCriteria(criteria);
+        jButton1 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jSplitPane2.setUI(new BrushedMetalSplitPaneUI());
+        simpleGradientPanel1 = new com.elevenworks.swing.panel.SimpleGradientPanel();
+        simpleGradientPanel1.setStartColor(ColorUtil.parseHtmlColor("#C5C5C4"));
+        simpleGradientPanel1.setEndColor(ColorUtil.parseHtmlColor("#979596"));
+        itemDetailPanel1 = new com.thornapple.ebay.manager.ui.ItemDetailPanel();
+        itemDetailPanel1.setUI(new TigerInfoPanelUI());
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblResults = new org.jdesktop.swingx.JXTable();
+        HighlighterPipeline highlighter = new HighlighterPipeline();
+        highlighter.addHighlighter(new AlternateRowHighlighter());
+        tblResults.setHighlighters(highlighter);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         jSplitPane1.setDividerLocation(350);
         jSplitPane1.setOpaque(false);
-        jSplitPane2.setDividerLocation(200);
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane2.setOpaque(false);
-        jXTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jXTable1);
-
-        jSplitPane2.setLeftComponent(jScrollPane2);
-
-        org.jdesktop.layout.GroupLayout simpleGradientPanel2Layout = new org.jdesktop.layout.GroupLayout(simpleGradientPanel2);
-        simpleGradientPanel2.setLayout(simpleGradientPanel2Layout);
-        simpleGradientPanel2Layout.setHorizontalGroup(
-            simpleGradientPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
-        );
-        simpleGradientPanel2Layout.setVerticalGroup(
-            simpleGradientPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-        );
-        jSplitPane2.setRightComponent(simpleGradientPanel2);
-
-        jSplitPane1.setRightComponent(jSplitPane2);
-
         jXPanel1.setOpaque(false);
         itemFilterPanel1.setOpaque(false);
 
         jScrollPane1.setOpaque(false);
+        jScrollPane1.setViewportView(itemFilterPanel2);
+
+        jScrollPane3.setViewportView(itemSearchPanel1);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
         jXPanel1.setLayout(jXPanel1Layout);
@@ -101,7 +140,10 @@ public class EbayManager2 extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                    .add(jButton1))
                 .addContainerGap())
         );
         jXPanel1Layout.setVerticalGroup(
@@ -110,23 +152,85 @@ public class EbayManager2 extends javax.swing.JFrame {
                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jXPanel1Layout.createSequentialGroup()
                         .add(176, 176, 176)
-                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
-                    .add(jXPanel1Layout.createSequentialGroup()
-                        .add(227, 227, 227)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)))
+                        .add(itemFilterPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 33, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jSplitPane1.setLeftComponent(jXPanel1);
+
+        jSplitPane2.setDividerLocation(250);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        org.jdesktop.layout.GroupLayout simpleGradientPanel1Layout = new org.jdesktop.layout.GroupLayout(simpleGradientPanel1);
+        simpleGradientPanel1.setLayout(simpleGradientPanel1Layout);
+        simpleGradientPanel1Layout.setHorizontalGroup(
+            simpleGradientPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, simpleGradientPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        simpleGradientPanel1Layout.setVerticalGroup(
+            simpleGradientPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(simpleGradientPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jSplitPane2.setBottomComponent(simpleGradientPanel1);
+
+        tblResults.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        tblResults.setSortable(false);
+        jScrollPane2.setViewportView(tblResults);
+
+        jSplitPane2.setLeftComponent(jScrollPane2);
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jSplitPane1.setRightComponent(jPanel1);
 
         org.jdesktop.layout.GroupLayout brushedMetalPanel1Layout = new org.jdesktop.layout.GroupLayout(brushedMetalPanel1);
         brushedMetalPanel1.setLayout(brushedMetalPanel1Layout);
         brushedMetalPanel1Layout.setHorizontalGroup(
             brushedMetalPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
+            .add(brushedMetalPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 828, Short.MAX_VALUE)
+                .addContainerGap())
         );
         brushedMetalPanel1Layout.setVerticalGroup(
             brushedMetalPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+            .add(brushedMetalPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -141,6 +245,11 @@ public class EbayManager2 extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        itemSearchPanel1.commit();
+        new FindItemsAction(itemEventList,criteria).actionPerformed(null);
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -157,13 +266,151 @@ public class EbayManager2 extends javax.swing.JFrame {
     private com.elevenworks.swing.panel.BrushedMetalPanel brushedMetalPanel1;
     private com.thornapple.ebay.manager.ui.ItemDetailPanel itemDetailPanel1;
     private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel1;
+    private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel2;
+    private com.thornapple.ebay.manager.ui.ItemSearchPanel itemSearchPanel1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private org.jdesktop.swingx.JXPanel jXPanel1;
-    private org.jdesktop.swingx.JXTable jXTable1;
-    private com.elevenworks.swing.panel.SimpleGradientPanel simpleGradientPanel2;
+    private com.elevenworks.swing.panel.SimpleGradientPanel simpleGradientPanel1;
+    private org.jdesktop.swingx.JXTable tblResults;
     // End of variables declaration//GEN-END:variables
+    
+    
+    class AuctionItemComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            AuctionItem itemA = (AuctionItem)a;
+            AuctionItem itemB = (AuctionItem)b;
+            
+            //initially sort by cost, lower is more important
+            double itemAValue = itemA.getCurrentPrice();
+            double itemBValue = itemB.getCurrentPrice();
+            
+            return new Double(itemAValue - itemBValue).intValue();
+        }
+    }
+    
+    class AuctionItemTextComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            AuctionItem itemA = (AuctionItem)a;
+            AuctionItem itemB = (AuctionItem)b;
+            
+            //initially sort by cost, lower is more important
+            double itemAValue = itemA.getCurrentPrice();
+            double itemBValue = itemB.getCurrentPrice();
+            
+            return new Double(itemAValue - itemBValue).intValue();
+        }
+    }
+    
+    class AuctionItemDateComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            AuctionItem itemA = (AuctionItem)a;
+            AuctionItem itemB = (AuctionItem)b;
+            
+            //initially sort by cost, lower is more important
+            double itemAValue = itemA.getCurrentPrice();
+            double itemBValue = itemB.getCurrentPrice();
+            
+            return new Double(itemAValue - itemBValue).intValue();
+        }
+    }
+    
+    class AuctionItemCostComparator implements Comparator {
+        public int compare(Object a, Object b) {
+            
+            double itemAValue = 0;
+            double itemBValue = 0;
+            
+            if (a == null)
+                itemAValue = 0;
+            else if (a instanceof String && ((String)a).length() > 0)
+                itemAValue = new Double((String)a);
+            else if (a instanceof Double)
+                itemAValue = (Double)a;
+            else
+                itemAValue = 0;
+            
+            if (b == null)
+                itemBValue = 0;
+            else if (b instanceof String && ((String)b).length() > 0)
+                itemAValue = new Double((String)b);
+            else if (b instanceof Double)
+                itemBValue = (Double)b;
+            else
+                itemBValue = 0;
+            
+            Double result = itemBValue - itemAValue;
+            
+            if (result > 0)
+                return -1;
+            else if (result < 0)
+                return 1;
+            else
+                return 0;
+            
+        }
+    }
+    
+    class ItemTableFormat implements AdvancedTableFormat, WritableTableFormat  {
+        
+        public int getColumnCount() {
+            return colNames.length;
+        }
+        
+        public String getColumnName(int column) {
+            return colNames[column];
+        }
+        
+        public Object getColumnValue(Object baseObject, int column) {
+            AuctionItem auctionItem = (AuctionItem)baseObject;
+            ItemType item = auctionItem.getItem();
+            ListingDetailsType dtl = item.getListingDetails();
+            
+            if (column == 0) return auctionItem.isStarred();
+            else if (column == 1) return item.getTitle();
+            else if (column == 2) return item.getSubTitle() == null ? "" : item.getSubTitle();
+            else if (column == 3) return auctionItem.getCurrentPrice();
+            else if (column == 4 && auctionItem.isShippingCostAvailable()) return auctionItem.getShippingCost();
+            else if (column == 5) return item.getSellingStatus().getBidCount();
+            else if (column == 6) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
+            else
+                return "";
+        }
+        
+        public Class getColumnClass(int i) {
+            if (i == 0)
+                return Boolean.class;
+            else
+                return String.class;
+        }
+        
+        public Comparator getColumnComparator(int column) {
+            if (column == 0) return GlazedLists.booleanComparator();
+            else if (column == 1) return GlazedLists.caseInsensitiveComparator();
+            else if (column == 2) return GlazedLists.caseInsensitiveComparator();
+            else if (column == 3) return new AuctionItemCostComparator();
+            else if (column == 4) return new AuctionItemCostComparator();
+            else if (column == 5) return GlazedLists.comparableComparator();
+            else if (column == 6) return GlazedLists.comparableComparator();
+            else return GlazedLists.caseInsensitiveComparator();
+        }
+        
+        public boolean isEditable(Object o, int i) {
+            if (i == 0) return true;
+            else return false;
+        }
+        
+        public Object setColumnValue(Object baseObject, Object editedObject, int i ) {
+            System.out.println((Boolean)editedObject);
+            if ( i == 0 )
+                ((AuctionItem)baseObject).setStarred( (Boolean)editedObject );
+            return baseObject;
+        }
+    }
     
 }

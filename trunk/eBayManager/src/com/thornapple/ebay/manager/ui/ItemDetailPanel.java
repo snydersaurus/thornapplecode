@@ -6,7 +6,10 @@
 
 package com.thornapple.ebay.manager.ui;
 
-import com.thornapple.ebay.manager.ui.laf.ThButtonUI;
+import com.ebay.soap.eBLBaseComponents.PictureDetailsType;
+import com.thornapple.ebay.manager.AuctionItem;
+import java.net.URI;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -14,9 +17,17 @@ import com.thornapple.ebay.manager.ui.laf.ThButtonUI;
  */
 public class ItemDetailPanel extends javax.swing.JPanel {
     
+    private AuctionItem item;
+    
     /** Creates new form ItemCellRenderer */
     public ItemDetailPanel() {
         initComponents();
+    }
+    
+    /** Creates new form ItemCellRenderer */
+    public ItemDetailPanel(AuctionItem item) {
+        initComponents();
+        this.item = item;
     }
     
     /** This method is called from within the constructor to
@@ -152,5 +163,35 @@ public class ItemDetailPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXImagePanel jXImagePanel1;
     private javax.swing.JLabel lblTitle;
     // End of variables declaration//GEN-END:variables
+
+    public AuctionItem getItem() {
+        return item;
+    }
+    //TODO should be on a separate thread
+    public void setItem(AuctionItem item) {
+        this.item = item;
+        this.lblTitle.setText(item.getItem().getTitle());
+        
+        PictureDetailsType pics = item.getItem().getPictureDetails();
+        if (pics != null){
+            if (pics.getGalleryURL() != null){
+                try {
+                    URI location = new URI(pics.getGalleryURL().toString());
+                    System.out.println(location);
+                    jXImagePanel1.setImage(ImageIO.read(location.toURL()));
+                }catch(Exception e){
+                }
+            } else if (pics.getPictureURL() != null && pics.getPictureURL().length > 0){
+                try {
+                    URI location = new URI(pics.getPictureURL(0).toString());
+                    System.out.println(location);
+                    jXImagePanel1.setImage(ImageIO.read(location.toURL()));
+                }catch(Exception e){
+                }
+            } else {
+                jXImagePanel1.setImage(null);
+            }
+        }
+    }
     
 }

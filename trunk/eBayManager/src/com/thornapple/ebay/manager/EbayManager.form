@@ -144,6 +144,9 @@
             </Property>
             <Property name="sortable" type="boolean" value="false"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="HighlighterPipeline highlighter = new HighlighterPipeline();&#xa;highlighter.addHighlighter(new AlternateRowHighlighter());&#xa;tblResults.setHighlighters(highlighter);&#xa;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
