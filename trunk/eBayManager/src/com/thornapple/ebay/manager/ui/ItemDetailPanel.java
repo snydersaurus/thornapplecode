@@ -6,6 +6,8 @@
 
 package com.thornapple.ebay.manager.ui;
 
+import com.thornapple.ebay.manager.ui.laf.ThButtonUI;
+
 /**
  *
  * @author  Bill

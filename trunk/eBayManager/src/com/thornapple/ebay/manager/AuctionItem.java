@@ -30,6 +30,7 @@ public class AuctionItem {
     private boolean shippingCostAvailable;
     
     private List labels = new ArrayList();
+    private static final String LABEL_STAR = "Starred";
     
     
     /** Creates a new instance of AuctionItem */
@@ -56,7 +57,8 @@ public class AuctionItem {
     
     public void setStarred(boolean starred) {
         this.starred = starred;
-        if (starred) labels.add("Starred");
+        if (starred) labels.add(LABEL_STAR);
+        else labels.remove(LABEL_STAR);
     }
     
     

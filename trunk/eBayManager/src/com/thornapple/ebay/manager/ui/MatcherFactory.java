@@ -147,6 +147,7 @@ public class MatcherFactory {
             
             // handle changes to the list's selection
             list.addListSelectionListener(this);
+            
         }
         
         

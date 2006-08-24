@@ -15,7 +15,6 @@ import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import com.thornapple.ebay.manager.AuctionItem;
-import com.thornapple.ebay.manager.ItemsToLabelsList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -31,16 +30,9 @@ import javax.swing.text.JTextComponent;
  */
 public class ItemFilterPanel extends javax.swing.JPanel {
     
-    EventList itemEventList;
     /** Creates new form ItemFilterPanel */
     public ItemFilterPanel() {
         initComponents();
-    }
-    
-    public ItemFilterPanel(EventList itemEventList){
-        this.itemEventList = itemEventList;
-        initComponents();
-        initComponentModel();
     }
     
     public JTextComponent getTitleComponent(){
@@ -133,18 +125,6 @@ public class ItemFilterPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    
-    private void initComponentModel() {
-        EventList labelsNonUnique = new ItemsToLabelsList(itemEventList);
-        UniqueList labelsEventList = new UniqueList(labelsNonUnique);
-        EventListModel labelListModel = new EventListModel(labelsEventList);
-        jXList1.setModel(labelListModel);
-    }
-    
-    public void setEventList(EventList itemEventList){
-        this.itemEventList = itemEventList;
-        initComponentModel();
-    }
     
     JList getLabelListComponent() {
         return jXList1;

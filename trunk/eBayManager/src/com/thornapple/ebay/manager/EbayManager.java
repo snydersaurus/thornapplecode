@@ -20,7 +20,12 @@ import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.ebay.soap.eBLBaseComponents.ListingDetailsType;
 import com.thornapple.ebay.manager.action.FindItemsAction;
 import com.thornapple.ebay.manager.ui.MatcherFactory;
+import com.thornapple.ebay.manager.ui.laf.ThButtonUI;
+import com.thornapple.ebay.manager.ui.laf.ThPanelUI;
+import java.awt.Color;
 import java.util.Comparator;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
 import org.jdesktop.swingx.decorator.HighlighterPipeline;
 import org.jdesktop.swingx.decorator.PatternFilter;
@@ -51,6 +56,7 @@ public class EbayManager extends javax.swing.JFrame {
     /** Creates new form EbayManager */
     public EbayManager() {
         initComponents();
+        this.getContentPane().setBackground(Color.WHITE);
         final PatternFilter patternFilter = new PatternFilter();
         patternFilter.setColumnIndex(2);
         
@@ -82,6 +88,9 @@ public class EbayManager extends javax.swing.JFrame {
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
         
+        jButton1.setUI(new ThButtonUI());
+        //itemSearchPanel.setUI(new ThPanelUI());
+        //itemFilterPanel1.setUI(new ThPanelUI());
     }
     
     /** This method is called from within the constructor to
@@ -104,6 +113,7 @@ public class EbayManager extends javax.swing.JFrame {
         tblResults = new org.jdesktop.swingx.JXTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(java.awt.Color.white);
         jButton1.setText("Find It!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,6 +208,17 @@ public class EbayManager extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (UnsupportedLookAndFeelException ex) {
+                    ex.printStackTrace();
+                } catch (InstantiationException ex) {
+                    ex.printStackTrace();
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
                 new EbayManager().setVisible(true);
             }
         });
@@ -312,7 +333,7 @@ public class EbayManager extends javax.swing.JFrame {
             else if (column == 2) return item.getSubTitle() == null ? "" : item.getSubTitle();
             else if (column == 3) return auctionItem.getCurrentPrice();
             else if (column == 4 && auctionItem.isShippingCostAvailable()) return auctionItem.getShippingCost();
-            else if (column == 5) return item.getSellingStatus().getBidCount().toString();
+            else if (column == 5) return item.getSellingStatus().getBidCount();
             else if (column == 6) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
             else
                 return "";
@@ -342,6 +363,7 @@ public class EbayManager extends javax.swing.JFrame {
         }
         
         public Object setColumnValue(Object baseObject, Object editedObject, int i ) {
+            System.out.println((Boolean)editedObject);
             if ( i == 0 )
                 ((AuctionItem)baseObject).setStarred( (Boolean)editedObject );
             return baseObject;
