@@ -56,7 +56,6 @@ public class ItemFilterPanel extends javax.swing.JPanel {
     private void initComponents() {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         txtMinimumPrice = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -66,9 +65,6 @@ public class ItemFilterPanel extends javax.swing.JPanel {
         jXList1 = new org.jdesktop.swingx.JXList();
 
         jLabel1.setText("Title");
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 3, 14));
-        jLabel2.setText("Filter");
 
         jLabel4.setText("Minimum Price");
 
@@ -85,28 +81,23 @@ public class ItemFilterPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel2)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1)
-                            .add(jLabel4)
-                            .add(jLabel5)
-                            .add(jLabel3))
-                        .add(4, 4, 4)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
-                            .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, txtMaximumPrice)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, txtMinimumPrice, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)))))
+                    .add(jLabel1)
+                    .add(jLabel4)
+                    .add(jLabel5)
+                    .add(jLabel3))
+                .add(4, 4, 4)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, txtMaximumPrice)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, txtMinimumPrice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel2)
-                .add(19, 19, 19)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel1))
@@ -121,8 +112,8 @@ public class ItemFilterPanel extends javax.swing.JPanel {
                 .add(22, 22, 22)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabel3)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
-                .addContainerGap())
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 168, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -133,7 +124,6 @@ public class ItemFilterPanel extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

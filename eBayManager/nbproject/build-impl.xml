@@ -235,6 +235,7 @@ is divided into following sections:
     -->
     <target name="deps-jar" depends="init" unless="no.deps">
         <ant target="jar" inheritall="false" antfile="${project.MultiSplit}/build.xml"/>
+        <ant target="jar" inheritall="false" antfile="${project.TimingFramework}/build.xml"/>
         <ant target="jar" inheritall="false" antfile="${project.ew}/build.xml"/>
         <ant target="jar" inheritall="false" antfile="${project.swingx}/build.xml"/>
     </target>
@@ -534,6 +535,7 @@ is divided into following sections:
     -->
     <target name="deps-clean" depends="init" unless="no.deps">
         <ant target="clean" inheritall="false" antfile="${project.MultiSplit}/build.xml"/>
+        <ant target="clean" inheritall="false" antfile="${project.TimingFramework}/build.xml"/>
         <ant target="clean" inheritall="false" antfile="${project.ew}/build.xml"/>
         <ant target="clean" inheritall="false" antfile="${project.swingx}/build.xml"/>
     </target>
