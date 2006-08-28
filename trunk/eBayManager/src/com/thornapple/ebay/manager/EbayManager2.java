@@ -22,13 +22,13 @@ import com.elevenworks.swing.border.BrushedMetalBevelBorder;
 import com.elevenworks.swing.panel.BrushedMetalScrollPaneUI;
 import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
 import com.elevenworks.swing.panel.TigerInfoPanelUI;
-import com.elevenworks.swing.util.ColorUtil;
 import com.thornapple.ebay.manager.action.FindItemsAction;
 import com.thornapple.ebay.manager.ui.MatcherFactory;
 import java.util.Comparator;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
 import org.jdesktop.swingx.decorator.HighlighterPipeline;
 
@@ -54,6 +54,8 @@ public class EbayManager2 extends javax.swing.JFrame {
     final String[] colNames = new String[] {
         ""," Title", "SubTitle", "Price", "Shipping", "BidCount", "EndTime"};
     
+    boolean firing;
+    
     /** Creates new form EbayManager2 */
     public EbayManager2() {
         try {
@@ -69,11 +71,22 @@ public class EbayManager2 extends javax.swing.JFrame {
         final EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
-     
+         
         tblResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                if (e.getFirstIndex() < 0) return;
-                itemDetailPanel1.setItem((AuctionItem) itemTableModel.getElementAt(e.getFirstIndex()));
+                if (firing || e.getFirstIndex() < 0) return;
+                firing = true;
+                final AuctionItem item = 
+                        (AuctionItem) itemTableModel.getElementAt(e.getFirstIndex());
+                SwingWorker worker = new SwingWorker(){
+                    protected Object doInBackground() throws Exception {
+                        itemDetailPanel1.transitionOut();
+                        itemDetailPanel1.setItem(item);
+                        itemDetailPanel1.transitionIn();
+                        firing = false;
+                        return SwingWorker.StateValue.DONE;
+                    }};
+                 worker.execute();
             }
         });
     }
@@ -102,16 +115,14 @@ public class EbayManager2 extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jSplitPane2.setUI(new BrushedMetalSplitPaneUI());
-        simpleGradientPanel1 = new com.elevenworks.swing.panel.SimpleGradientPanel();
-        simpleGradientPanel1.setStartColor(ColorUtil.parseHtmlColor("#C5C5C4"));
-        simpleGradientPanel1.setEndColor(ColorUtil.parseHtmlColor("#979596"));
-        itemDetailPanel1 = new com.thornapple.ebay.manager.ui.ItemDetailPanel();
-        itemDetailPanel1.setUI(new TigerInfoPanelUI());
         jScrollPane2 = new javax.swing.JScrollPane();
         tblResults = new org.jdesktop.swingx.JXTable();
         HighlighterPipeline highlighter = new HighlighterPipeline();
         highlighter.addHighlighter(new AlternateRowHighlighter());
         tblResults.setHighlighters(highlighter);
+
+        itemDetailPanel1 = new com.thornapple.ebay.manager.ui.ItemDetailPanel();
+        itemDetailPanel1.setUI(new TigerInfoPanelUI());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         jSplitPane1.setDividerLocation(350);
@@ -134,11 +145,11 @@ public class EbayManager2 extends javax.swing.JFrame {
         jXPanel1Layout.setHorizontalGroup(
             jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
-                .add(16, 16, 16)
+                .addContainerGap()
                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
-                    .add(jButton1))
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                    .add(jButton1)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jXPanel1Layout.setVerticalGroup(
@@ -156,25 +167,6 @@ public class EbayManager2 extends javax.swing.JFrame {
 
         jSplitPane2.setDividerLocation(250);
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        org.jdesktop.layout.GroupLayout simpleGradientPanel1Layout = new org.jdesktop.layout.GroupLayout(simpleGradientPanel1);
-        simpleGradientPanel1.setLayout(simpleGradientPanel1Layout);
-        simpleGradientPanel1Layout.setHorizontalGroup(
-            simpleGradientPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, simpleGradientPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        simpleGradientPanel1Layout.setVerticalGroup(
-            simpleGradientPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(simpleGradientPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(itemDetailPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jSplitPane2.setBottomComponent(simpleGradientPanel1);
-
         tblResults.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -187,6 +179,9 @@ public class EbayManager2 extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tblResults);
 
         jSplitPane2.setLeftComponent(jScrollPane2);
+
+        itemDetailPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jSplitPane2.setRightComponent(itemDetailPanel1);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -265,7 +260,6 @@ public class EbayManager2 extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private org.jdesktop.swingx.JXPanel jXPanel1;
-    private com.elevenworks.swing.panel.SimpleGradientPanel simpleGradientPanel1;
     private org.jdesktop.swingx.JXTable tblResults;
     // End of variables declaration//GEN-END:variables
     

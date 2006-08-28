@@ -7,16 +7,35 @@
 package com.thornapple.ebay.manager.ui;
 
 import com.ebay.soap.eBLBaseComponents.PictureDetailsType;
+import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
+import com.elevenworks.swing.panel.SimpleGradientPanel;
+import com.elevenworks.swing.panel.TigerInfoPanelUI;
+import com.sun.javaone.aerith.g2d.AnimationUtil;
 import com.thornapple.ebay.manager.AuctionItem;
+import com.thornapple.ebay.manager.adapter.EbayItemAdapter;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import javax.imageio.ImageIO;
+import org.jdesktop.animation.timing.TimingController;
+import org.jdesktop.animation.timing.TimingTarget;
+import org.jdesktop.jdic.browser.BrowserEngineManager;
+import org.jdesktop.jdic.browser.WebBrowser;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 /**
  *
  * @author  Bill
  */
-public class ItemDetailPanel extends javax.swing.JPanel {
+public class ItemDetailPanel extends SimpleGradientPanel {
     
+    private static final BufferedImage NO_IMAGE =
+            new BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
+    
+    private WebBrowser browser;
+    
+    private EbayItemAdapter adapter = new EbayItemAdapter();
     private AuctionItem item;
     
     /** Creates new form ItemCellRenderer */
@@ -37,161 +56,181 @@ public class ItemDetailPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+        jXPanel2 = new org.jdesktop.swingx.JXPanel();
+        jXPanel2.setUI(new TigerInfoPanelUI());
+        jSplitPane1 = new javax.swing.JSplitPane();
         jXImagePanel1 = new org.jdesktop.swingx.JXImagePanel();
+        //jXImagePanel1.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
+        jXPanel1 = new org.jdesktop.swingx.JXPanel();
+        jXPanel1.setBackgroundPainter(new BasicGradientPainter(BasicGradientPainter.AERITH));
+        lblPrice = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        browserPanel = new javax.swing.JPanel();
 
+        jXPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jSplitPane1.setDividerLocation(200);
         jXImagePanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        org.jdesktop.layout.GroupLayout jXImagePanel1Layout = new org.jdesktop.layout.GroupLayout(jXImagePanel1);
-        jXImagePanel1.setLayout(jXImagePanel1Layout);
-        jXImagePanel1Layout.setHorizontalGroup(
-            jXImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 100, Short.MAX_VALUE)
-        );
-        jXImagePanel1Layout.setVerticalGroup(
-            jXImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 87, Short.MAX_VALUE)
-        );
+        jXPanel1.setAlpha(0.4F);
+        jXPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        lblPrice.setFont(new java.awt.Font("Tahoma", 3, 18));
+        lblPrice.setText("Price");
 
         lblTitle.setFont(new java.awt.Font("Tahoma", 1, 12));
         lblTitle.setText("Title");
 
-        jLabel1.setText("Subtitle");
+        org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
+        jXPanel1.setLayout(jXPanel1Layout);
+        jXPanel1Layout.setHorizontalGroup(
+            jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jXPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jXPanel1Layout.createSequentialGroup()
+                        .add(lblTitle, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                        .add(55, 55, 55))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
+                        .add(lblPrice)
+                        .addContainerGap())))
+        );
+        jXPanel1Layout.setVerticalGroup(
+            jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(lblTitle)
+                .add(25, 25, 25)
+                .add(lblPrice)
+                .addContainerGap())
+        );
 
-        jLabel2.setText("Time Remaining:");
+        org.jdesktop.layout.GroupLayout jXImagePanel1Layout = new org.jdesktop.layout.GroupLayout(jXImagePanel1);
+        jXImagePanel1.setLayout(jXImagePanel1Layout);
+        jXImagePanel1Layout.setHorizontalGroup(
+            jXImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jXImagePanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jXPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jXImagePanel1Layout.setVerticalGroup(
+            jXImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jXImagePanel1Layout.createSequentialGroup()
+                .addContainerGap(296, Short.MAX_VALUE)
+                .add(jXPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jSplitPane1.setLeftComponent(jXImagePanel1);
 
-        jLabel3.setText("Bids:");
+        browserPanel.setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 12));
-        jLabel4.setText("Price");
+        jSplitPane1.setRightComponent(browserPanel);
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 12));
-        jLabel5.setText("$");
-
-        jLabel6.setText("00:00");
-
-        jLabel7.setText("0");
-
-        jButton1.setText("Bid");
+        org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(jXPanel2);
+        jXPanel2.setLayout(jXPanel2Layout);
+        jXPanel2Layout.setHorizontalGroup(
+            jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+        );
+        jXPanel2Layout.setVerticalGroup(
+            jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+        );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jLabel4)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 54, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblTitle, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
-                            .add(jLabel1)
-                            .add(layout.createSequentialGroup()
-                                .add(10, 10, 10)
-                                .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel2)
-                                    .add(jLabel3))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                                    .add(jLabel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE))))
-                        .addContainerGap())
-                    .add(jButton1)))
+            .add(jXPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(11, 11, 11)
-                        .add(lblTitle)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel2)
-                            .add(jLabel6))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel3)
-                            .add(jLabel7)))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 9, Short.MAX_VALUE)
-                        .add(jButton1))
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel5)
-                            .add(jLabel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())))
+            .add(jXPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel browserPanel;
+    private javax.swing.JSplitPane jSplitPane1;
     private org.jdesktop.swingx.JXImagePanel jXImagePanel1;
+    private org.jdesktop.swingx.JXPanel jXPanel1;
+    private org.jdesktop.swingx.JXPanel jXPanel2;
+    private javax.swing.JLabel lblPrice;
     private javax.swing.JLabel lblTitle;
     // End of variables declaration//GEN-END:variables
-
+    
     public AuctionItem getItem() {
         return item;
     }
     //TODO should be on a separate thread
     public void setItem(AuctionItem item) {
+        if (browser == null){ //cant have this called as part of bean instantiation
+            BrowserEngineManager.instance().setActiveEngine(BrowserEngineManager.IE);
+            browser = new WebBrowser();
+            browserPanel.add(browser,BorderLayout.CENTER);
+        }
+        
         this.item = item;
+        try {
+            item = adapter.getItemDetails(item.getItem().getItemID().getValue());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
         this.lblTitle.setText(item.getItem().getTitle());
+        this.lblPrice.setText("$"+item.getCurrentPrice());
+        this.browser.setContent(item.getItem().getDescription());
         
         PictureDetailsType pics = item.getItem().getPictureDetails();
         if (pics != null){
-            if (pics.getGalleryURL() != null){
+            /*if (pics.getGalleryURL() != null){
                 try {
                     URI location = new URI(pics.getGalleryURL().toString());
                     System.out.println(location);
                     jXImagePanel1.setImage(ImageIO.read(location.toURL()));
                 }catch(Exception e){
                 }
-            } else if (pics.getPictureURL() != null && pics.getPictureURL().length > 0){
+            } else*/ if (pics.getPictureURL() != null && pics.getPictureURL().length > 0){
                 try {
                     URI location = new URI(pics.getPictureURL(0).toString());
-                    System.out.println(location);
+                    //System.out.println(location);
                     jXImagePanel1.setImage(ImageIO.read(location.toURL()));
                 }catch(Exception e){
                 }
             } else {
-                jXImagePanel1.setImage(null);
+                System.out.println("No item available.");
+                jXImagePanel1.setImage(NO_IMAGE);
             }
         }
+        
     }
+    
+    public void transitionIn(){
+        final Container parent = jXPanel2.getParent();
+        TimingController fadeOut = AnimationUtil.createFadeInAnimation(jXPanel2);
+        fadeOut.addTarget(new TimingTarget() {
+            public void begin() {parent.repaint();}
+            public void end() {
+                //parent.remove(ItemDetailPanel.this);
+                parent.repaint();
+            }
+            public void timingEvent(long l, long l0, float f) {parent.repaint();}
+        });
+        fadeOut.start();
+    }
+    
+    public void transitionOut(){
+        final Container parent = jXPanel2.getParent();
+        TimingController fadeOut = AnimationUtil.createFadeOutAnimation(jXPanel2);
+        fadeOut.addTarget(new TimingTarget() {
+            public void begin() {parent.repaint();}
+            public void end() {
+                //parent.remove(ItemDetailPanel.this);
+                parent.repaint();
+            }
+            public void timingEvent(long l, long l0, float f) {parent.repaint();}
+        });
+        fadeOut.start();
+    }
+    
     
 }
