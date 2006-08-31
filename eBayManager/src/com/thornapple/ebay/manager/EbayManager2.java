@@ -13,6 +13,7 @@ import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.gui.WritableTableFormat;
+import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.ebay.sdk.util.eBayUtil;
@@ -23,7 +24,11 @@ import com.elevenworks.swing.panel.BrushedMetalScrollPaneUI;
 import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
 import com.elevenworks.swing.panel.TigerInfoPanelUI;
 import com.thornapple.ebay.manager.action.FindItemsAction;
+import com.thornapple.ebay.manager.ui.DropShawdowTableCellRenderer;
+import com.thornapple.ebay.manager.ui.ItemSummaryPanel;
 import com.thornapple.ebay.manager.ui.MatcherFactory;
+import com.thornapple.ebay.manager.ui.SpanTable;
+import com.thornapple.ebay.manager.ui.laf.SpanTableUI;
 import java.util.Comparator;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
@@ -52,7 +57,7 @@ public class EbayManager2 extends javax.swing.JFrame {
     
     //table setup
     final String[] colNames = new String[] {
-        ""," Title", "SubTitle", "Price", "Shipping", "BidCount", "EndTime"};
+        "Sort By:","Title", "Price", "Shipping", "Bids", "Time End"};
     
     boolean firing;
     
@@ -71,22 +76,40 @@ public class EbayManager2 extends javax.swing.JFrame {
         final EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
-         
-        tblResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tblResults.setDefaultRenderer(String.class,new DropShawdowTableCellRenderer());
+        tblResults.getColumn(0).setWidth(25);
+        
+        tblResults.setDefaultRenderer(String.class,new ItemSummaryPanel(itemTableModel));
+        tblResults.getColumn(1).setCellRenderer(new ItemSummaryPanel(itemTableModel));
+        tblResults.getColumn(1).setWidth(200);
+        tblResults.setRowHeight(75);
+        tblResults.getColumnModel().setColumnMargin(0);
+        tblResults.setUI(new SpanTableUI());
+        
+        
+        final EventSelectionModel eventSelectionModel = new EventSelectionModel(filteredList);
+        tblResults.setSelectionModel(eventSelectionModel);
+        eventSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            private String lastItemSelected = "";
             public void valueChanged(ListSelectionEvent e) {
-                if (firing || e.getFirstIndex() < 0) return;
-                firing = true;
-                final AuctionItem item = 
-                        (AuctionItem) itemTableModel.getElementAt(e.getFirstIndex());
-                SwingWorker worker = new SwingWorker(){
-                    protected Object doInBackground() throws Exception {
-                        itemDetailPanel1.transitionOut();
-                        itemDetailPanel1.setItem(item);
-                        itemDetailPanel1.transitionIn();
-                        firing = false;
-                        return SwingWorker.StateValue.DONE;
-                    }};
-                 worker.execute();
+                //if (firing || e.getFirstIndex() < 0) return;
+                //firing = true;
+                
+                if(!eventSelectionModel.isSelectionEmpty()) {
+                    EventList selectedItems = eventSelectionModel.getSelected();
+                    final AuctionItem item = (AuctionItem)selectedItems.get(0);
+                    if (lastItemSelected.equals(item.getID())) return;
+                    lastItemSelected = item.getID();
+                    SwingWorker worker = new SwingWorker(){
+                        protected Object doInBackground() throws Exception {
+                            itemDetailPanel1.transitionOut();
+                            itemDetailPanel1.setItem(item);
+                            itemDetailPanel1.transitionIn();
+                            firing = false;
+                            return SwingWorker.StateValue.DONE;
+                        }};
+                        worker.execute();
+                }
             }
         });
     }
@@ -116,7 +139,7 @@ public class EbayManager2 extends javax.swing.JFrame {
         jSplitPane2 = new javax.swing.JSplitPane();
         jSplitPane2.setUI(new BrushedMetalSplitPaneUI());
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblResults = new org.jdesktop.swingx.JXTable();
+        tblResults = new SpanTable();
         HighlighterPipeline highlighter = new HighlighterPipeline();
         highlighter.addHighlighter(new AlternateRowHighlighter());
         tblResults.setHighlighters(highlighter);
@@ -133,7 +156,7 @@ public class EbayManager2 extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(itemSearchPanel1);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Find It!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -160,7 +183,7 @@ public class EbayManager2 extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jSplitPane1.setLeftComponent(jXPanel1);
@@ -175,12 +198,15 @@ public class EbayManager2 extends javax.swing.JFrame {
 
             }
         ));
+        tblResults.setShowHorizontalLines(false);
+        tblResults.setShowVerticalLines(false);
         tblResults.setSortable(false);
         jScrollPane2.setViewportView(tblResults);
 
         jSplitPane2.setLeftComponent(jScrollPane2);
 
         itemDetailPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        itemDetailPanel1.setMaximumSize(new java.awt.Dimension(500, 500));
         jSplitPane2.setRightComponent(itemDetailPanel1);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -232,10 +258,13 @@ public class EbayManager2 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        itemSearchPanel1.commit();
-        new FindItemsAction(itemEventList,criteria).actionPerformed(null);
+        doSearch();
     }//GEN-LAST:event_jButton1ActionPerformed
     
+    private void doSearch(){
+        itemSearchPanel1.commit();
+        new FindItemsAction(itemEventList,criteria).actionPerformed(null);
+    }
     /**
      * @param args the command line arguments
      */
@@ -356,11 +385,10 @@ public class EbayManager2 extends javax.swing.JFrame {
             
             if (column == 0) return auctionItem.isStarred();
             else if (column == 1) return item.getTitle();
-            else if (column == 2) return item.getSubTitle() == null ? "" : item.getSubTitle();
-            else if (column == 3) return auctionItem.getCurrentPrice();
-            else if (column == 4 && auctionItem.isShippingCostAvailable()) return auctionItem.getShippingCost();
-            else if (column == 5) return item.getSellingStatus().getBidCount();
-            else if (column == 6) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
+            else if (column == 2) return auctionItem.getCurrentPrice();
+            else if (column == 3 && auctionItem.isShippingCostAvailable()) return auctionItem.getShippingCost();
+            else if (column == 4) return item.getSellingStatus().getBidCount();
+            else if (column == 5) return eBayUtil.toAPITimeString(dtl.getEndTime().getTime());
             else
                 return "";
         }

@@ -10,10 +10,15 @@
 package com.thornapple.ebay.manager;
 
 import com.ebay.soap.eBLBaseComponents.ItemType;
+import com.ebay.soap.eBLBaseComponents.PictureDetailsType;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -31,6 +36,16 @@ public class AuctionItem {
     
     private List labels = new ArrayList();
     private static final String LABEL_STAR = "Starred";
+    private static BufferedImage NO_IMAGE;
+    private Image image;
+    
+    static {
+        try {
+          NO_IMAGE = ImageIO.read(AuctionItem.class.getResource("noimage.JPG")); 
+        } catch (Exception e) {
+          NO_IMAGE = new BufferedImage(640,480,BufferedImage.TYPE_INT_RGB);
+        }
+    }
     
     
     /** Creates a new instance of AuctionItem */
@@ -96,11 +111,32 @@ public class AuctionItem {
             return item.getSellingStatus().getCurrentPrice().getValue();
     }
     
+    public Image getGalleryImage(){
+        if (image != null)
+            return image;
+        
+        PictureDetailsType pics = getItem().getPictureDetails();
+        if (pics != null && pics.getGalleryURL() != null){
+            try {
+                URI location = new URI(pics.getGalleryURL().toString());
+                System.out.println(location);
+                image = ImageIO.read(location.toURL()); 
+            }catch(Exception e){
+                image = NO_IMAGE;
+            }
+        } else {
+            System.out.println("No item available.");
+            image = NO_IMAGE;
+        }
+        
+        return image;
+    }
+    
     public String toString(){
         return item.getItemID() + " | "+ item.getTitle() + " | " + getCurrentPrice() + " | " + getTotalCost();
     }
     
-    String getID() {
+    public String getID() {
         return id;
     }
     
