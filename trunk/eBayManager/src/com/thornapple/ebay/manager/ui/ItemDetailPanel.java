@@ -68,7 +68,8 @@ public class ItemDetailPanel extends SimpleGradientPanel {
         browserPanel = new javax.swing.JPanel();
 
         jXPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(300);
+        jSplitPane1.setResizeWeight(0.5);
         jXImagePanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jXPanel1.setAlpha(0.4F);
         jXPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
@@ -86,7 +87,7 @@ public class ItemDetailPanel extends SimpleGradientPanel {
                 .addContainerGap()
                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jXPanel1Layout.createSequentialGroup()
-                        .add(lblTitle, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                        .add(lblTitle, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
                         .add(55, 55, 55))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
                         .add(lblPrice)
@@ -122,6 +123,7 @@ public class ItemDetailPanel extends SimpleGradientPanel {
 
         browserPanel.setLayout(new java.awt.BorderLayout());
 
+        browserPanel.setMaximumSize(new java.awt.Dimension(300, 2147483647));
         jSplitPane1.setRightComponent(browserPanel);
 
         org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(jXPanel2);
