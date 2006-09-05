@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicHTML;
+import javax.swing.plaf.metal.MetalButtonUI;
 import javax.swing.text.View;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.GlossPainter;
@@ -79,7 +80,7 @@ public class ThButtonUI extends BasicButtonUI {
         
         if (model.isArmed() && model.isPressed()) {
             matte.setPaint(GLOSS_BASE_COLOR);
-            paintButtonPressed(g, b);
+            paintButtonPressed(g, b);new MetalButtonUI();
         }
         
         if (b.getIcon() != null) {

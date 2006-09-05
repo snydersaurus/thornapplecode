@@ -24,16 +24,21 @@ import com.elevenworks.swing.panel.BrushedMetalScrollPaneUI;
 import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
 import com.elevenworks.swing.panel.TigerInfoPanelUI;
 import com.thornapple.ebay.manager.action.FindItemsAction;
-import com.thornapple.ebay.manager.ui.DropShawdowTableCellRenderer;
+import com.thornapple.ebay.manager.ui.BrushedMetalTableHeaderSortableRenderer;
 import com.thornapple.ebay.manager.ui.ItemSummaryPanel;
 import com.thornapple.ebay.manager.ui.MatcherFactory;
 import com.thornapple.ebay.manager.ui.SpanTable;
 import com.thornapple.ebay.manager.ui.laf.SpanTableUI;
+import com.thornapple.ebay.manager.ui.laf.StarButtonUI;
 import java.util.Comparator;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.AlternateRowHighlighter;
 import org.jdesktop.swingx.decorator.HighlighterPipeline;
 
@@ -57,7 +62,7 @@ public class EbayManager2 extends javax.swing.JFrame {
     
     //table setup
     final String[] colNames = new String[] {
-        "Sort By:","Title", "Price", "Shipping", "Bids", "Time End"};
+        "","Title", "Price", "Shipping", "Bids", "Time End"};
     
     boolean firing;
     
@@ -75,17 +80,26 @@ public class EbayManager2 extends javax.swing.JFrame {
         
         final EventTableModel itemTableModel = new EventTableModel(filteredList, new ItemTableFormat());
         tblResults.setModel(itemTableModel);
+        tblResults.getTableHeader().setDefaultRenderer(new BrushedMetalTableHeaderSortableRenderer());
         TableComparatorChooser tableSorter = new TableComparatorChooser(tblResults, sortedItems, true);
-        tblResults.setDefaultRenderer(String.class,new DropShawdowTableCellRenderer());
-        tblResults.getColumn(0).setWidth(25);
-        
         tblResults.setDefaultRenderer(String.class,new ItemSummaryPanel(itemTableModel));
-        tblResults.getColumn(1).setCellRenderer(new ItemSummaryPanel(itemTableModel));
-        tblResults.getColumn(1).setWidth(200);
-        tblResults.setRowHeight(75);
+        //System.out.println(tblResults.getDefaultRenderer(Boolean.class).getClass().toString());
+        //System.out.println(tblResults.getDefaultEditor(Boolean.class).getClass().toString());
+        //tblResults.setDefaultEditor(Boolean.class,new StarCheckboxTableCellRenderer());
+        //tblResults.setDefaultRenderer(Boolean.class,new StarCheckboxTableCellRenderer());
+        //get the renderer set ui, get the editor.getCompoent.setui
+        TableCellRenderer booleanRenderer = tblResults.getDefaultRenderer(Boolean.class);
+        ((JCheckBox)booleanRenderer).setUI(new StarButtonUI());
+        DefaultCellEditor booleanEditor = (DefaultCellEditor)tblResults.getDefaultEditor(Boolean.class);
+        ((JCheckBox)booleanEditor.getComponent()).setUI(new StarButtonUI());
+       
+        //tblResults.getColumn(1).setCellRenderer(new ItemSummaryPanel(itemTableModel));
+        tblResults.setRowHeight(150);
         tblResults.getColumnModel().setColumnMargin(0);
         tblResults.setUI(new SpanTableUI());
-        
+        tblResults.getColumn(0).setWidth(40);
+        tblResults.getTableHeader().setReorderingAllowed(false);
+        tblResults.getTableHeader().setResizingAllowed(false);
         
         final EventSelectionModel eventSelectionModel = new EventSelectionModel(filteredList);
         tblResults.setSelectionModel(eventSelectionModel);
@@ -148,7 +162,7 @@ public class EbayManager2 extends javax.swing.JFrame {
         itemDetailPanel1.setUI(new TigerInfoPanelUI());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        jSplitPane1.setDividerLocation(350);
+        jSplitPane1.setDividerLocation(260);
         jSplitPane1.setOpaque(false);
         jXPanel1.setOpaque(false);
         jScrollPane1.setOpaque(false);
@@ -170,9 +184,9 @@ public class EbayManager2 extends javax.swing.JFrame {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                     .add(jButton1)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE))
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jXPanel1Layout.setVerticalGroup(
@@ -183,13 +197,12 @@ public class EbayManager2 extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jSplitPane1.setLeftComponent(jXPanel1);
 
-        jSplitPane2.setDividerLocation(250);
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setDividerLocation(300);
         tblResults.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -215,7 +228,7 @@ public class EbayManager2 extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
+                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(

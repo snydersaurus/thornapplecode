@@ -17,7 +17,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                      <Component id="cbSearchDescription" pref="201" max="32767" attributes="0"/>
+                      <Component id="cbSearchDescription" pref="194" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="10" pref="10" max="10" attributes="0"/>
@@ -30,7 +30,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtZip" min="-2" pref="44" max="-2" attributes="0"/>
+                      <Component id="txtZip" pref="54" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
@@ -44,7 +44,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtSearch" pref="187" max="32767" attributes="0"/>
+                      <Component id="txtSearch" pref="180" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -74,8 +74,8 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtZip" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtMiles" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtZip" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
