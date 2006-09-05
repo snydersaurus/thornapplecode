@@ -85,7 +85,7 @@ public class SpanTableUI extends BasicTableUI {
         }
 
         // Paint the grid.
-        paintGrid(g, rMin, rMax, cMin, cMax);
+        //paintGrid(g, rMin, rMax, cMin, cMax);
 
         // Paint the cells.
     	paintCells(g, rMin, rMax, cMin, cMax);
@@ -99,7 +99,7 @@ public class SpanTableUI extends BasicTableUI {
             TableCellRenderer renderer = table.getCellRenderer(row, column);
             Component component = table.prepareRenderer(renderer, row, column);
             rendererPane.paintComponent(g, component, table, cellRect.x, cellRect.y,
-                                    cellRect.width, cellRect.height, true);
+                                    cellRect.width-1, cellRect.height, true);
         }
     }
     private void paintCells(Graphics g, int rMin, int rMax, int cMin, int cMax) {

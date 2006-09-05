@@ -12,6 +12,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
+import org.jdesktop.swingx.JXImagePanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 /**
@@ -27,6 +28,7 @@ public class ItemSummaryPanel extends javax.swing.JPanel
     public ItemSummaryPanel(EventTableModel tableModel) {
         initComponents();
         this.tableModel = tableModel;
+        jXImagePanel1.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
     }
     
     /** This method is called from within the constructor to
@@ -37,30 +39,87 @@ public class ItemSummaryPanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         dropShadowBorder1 = new DropShadowBorder(UIManager.getColor("Control"), 1, 5, .5f, 12, false, false, true, false);
+        jXPanel1 = new org.jdesktop.swingx.JXPanel();
         jXImagePanel1 = new org.jdesktop.swingx.JXImagePanel();
-        lblTitle = new javax.swing.JLabel();
-        lblSubtitle = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        lblPrice = new javax.swing.JLabel();
+        lblShipping = new javax.swing.JLabel();
+        lblTime = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        lblBids = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtTitle = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtSubtitle = new javax.swing.JTextArea();
 
+        jXPanel1.setAlpha(0.7F);
+        jXPanel1.setBorder(dropShadowBorder1);
+        org.jdesktop.layout.GroupLayout jXPanel1Layout = new org.jdesktop.layout.GroupLayout(jXPanel1);
+        jXPanel1.setLayout(jXPanel1Layout);
+        jXPanel1Layout.setHorizontalGroup(
+            jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 350, Short.MAX_VALUE)
+        );
+        jXPanel1Layout.setVerticalGroup(
+            jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 54, Short.MAX_VALUE)
+        );
+
+        jXImagePanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jXImagePanel1.setMaximumSize(new java.awt.Dimension(96, 96));
+        jXImagePanel1.setMinimumSize(new java.awt.Dimension(96, 96));
+        jXImagePanel1.setPreferredSize(new java.awt.Dimension(96, 96));
         org.jdesktop.layout.GroupLayout jXImagePanel1Layout = new org.jdesktop.layout.GroupLayout(jXImagePanel1);
         jXImagePanel1.setLayout(jXImagePanel1Layout);
         jXImagePanel1Layout.setHorizontalGroup(
             jXImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 73, Short.MAX_VALUE)
+            .add(0, 92, Short.MAX_VALUE)
         );
         jXImagePanel1Layout.setVerticalGroup(
             jXImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 67, Short.MAX_VALUE)
+            .add(0, 92, Short.MAX_VALUE)
         );
 
-        lblTitle.setFont(new java.awt.Font("Tahoma", 1, 10));
-        lblTitle.setText("Title");
+        lblPrice.setFont(new java.awt.Font("Tahoma", 3, 12));
+        lblPrice.setText("Price");
 
-        lblSubtitle.setFont(new java.awt.Font("Tahoma", 2, 10));
-        lblSubtitle.setText("Subtitle");
+        lblShipping.setText("Shipping");
 
-        jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        lblTime.setText("time");
+
+        jLabel1.setText("Ends:");
+
+        jLabel3.setText("Bids:");
+
+        lblBids.setText("0");
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        txtTitle.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
+        txtTitle.setColumns(20);
+        txtTitle.setEditable(false);
+        txtTitle.setFont(new java.awt.Font("Tahoma", 1, 10));
+        txtTitle.setLineWrap(true);
+        txtTitle.setRows(5);
+        txtTitle.setWrapStyleWord(true);
+        txtTitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        txtTitle.setOpaque(false);
+        jScrollPane1.setViewportView(txtTitle);
+
+        jScrollPane2.setBorder(null);
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        txtSubtitle.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
+        txtSubtitle.setColumns(20);
+        txtSubtitle.setEditable(false);
+        txtSubtitle.setFont(new java.awt.Font("Tahoma", 2, 10));
+        txtSubtitle.setLineWrap(true);
+        txtSubtitle.setRows(5);
+        txtSubtitle.setWrapStyleWord(true);
+        txtSubtitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        txtSubtitle.setOpaque(false);
+        jScrollPane2.setViewportView(txtSubtitle);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -68,28 +127,52 @@ public class ItemSummaryPanel extends javax.swing.JPanel
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(20, 20, 20)
+                    .add(lblShipping)
+                    .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(lblPrice))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                    .add(jScrollPane2, 0, 0, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblTitle)
-                            .add(lblSubtitle))
-                        .addContainerGap(241, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel3)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jCheckBox1)
-                        .addContainerGap())))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(lblBids, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(lblTime, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jCheckBox1)
-                .add(5, 5, 5)
-                .add(lblTitle)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblSubtitle))
-            .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jScrollPane1, 0, 0, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 36, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblPrice)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblShipping)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(lblTime)
+                            .add(jLabel1))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel3)
+                            .add(lblBids))
+                        .add(12, 12, 12)))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -100,19 +183,31 @@ public class ItemSummaryPanel extends javax.swing.JPanel
             setBorder(null);
         
         AuctionItem item = (AuctionItem)tableModel.getElementAt(row);
-        lblTitle.setText(item.getItem().getTitle());
-        lblSubtitle.setText(item.getItem().getSubTitle());
+        txtTitle.setText(item.getItem().getTitle());
+        txtSubtitle.setText(item.getItem().getSubTitle());
         jXImagePanel1.setImage(item.getGalleryImage());
+        lblPrice.setText(""+item.getCurrentPrice());
+        lblShipping.setText(""+item.getShippingCost());
+        lblBids.setText(item.getBids());
+        lblTime.setText(item.getTimeLeft());
         return this;
     }
-    
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.border.DropShadowBorder dropShadowBorder1;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private org.jdesktop.swingx.JXImagePanel jXImagePanel1;
-    private javax.swing.JLabel lblSubtitle;
-    private javax.swing.JLabel lblTitle;
+    private org.jdesktop.swingx.JXPanel jXPanel1;
+    private javax.swing.JLabel lblBids;
+    private javax.swing.JLabel lblPrice;
+    private javax.swing.JLabel lblShipping;
+    private javax.swing.JLabel lblTime;
+    private javax.swing.JTextArea txtSubtitle;
+    private javax.swing.JTextArea txtTitle;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -19,6 +19,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Transparency;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.plaf.basic.BasicPanelUI;
@@ -52,11 +53,11 @@ public class ThPanelUI extends BasicPanelUI {
         this.g = (Graphics2D) g;
         this.height = c.getHeight();
         this.width = c.getWidth();
-        clipShape = g.getClip();
+        clipShape = createClipShape();//g.getClip();
         //Shape clipShape = new Ellipse2D.Float(width/4, height/4, width/2, height/2);
         
         // Clear the background to white
-        g.setColor(Color.WHITE);
+        g.setColor(c.getBackground());
         g.fillRect(0, 0, width, height);
         
         // Set the clip shape
@@ -76,6 +77,46 @@ public class ThPanelUI extends BasicPanelUI {
         
         g.drawImage(clipImage, 0, 0, null);
         
+    }
+    
+    
+    private Shape createClipShape() {
+        float border = 20.0f;
+        
+        float x1 = border;
+        float y1 = border;
+        float x2 = width - border;
+        float y2 = height - border;
+        
+        float adj = 3.0f; // helps round out the sharp corners
+        float arc = 8.0f;
+        float dcx = 0.18f * width;
+        float cx1 = x1-dcx;
+        float cy1 = 0.40f * height;
+        float cx2 = x1+dcx;
+        float cy2 = 0.50f * height;
+        GeneralPath gp = new GeneralPath();
+        gp.moveTo(55, 0);
+        gp.lineTo(67,36);
+        gp.lineTo(109,36);
+        gp.lineTo(73,54);
+        gp.lineTo(83,96);
+        gp.lineTo(55,68);
+        gp.lineTo(27,96);
+        gp.lineTo(37,54);
+        gp.lineTo(1,36);
+        gp.lineTo(43,36);
+        
+        //gp.quadTo(x1, y1, x1+adj, y1);
+        //gp.lineTo(x2-arc, y1);
+        //gp.quadTo(x2, y1, x2, y1+arc);
+        //gp.lineTo(x2, y2-arc);
+        //gp.quadTo(x2, y2, x2-arc, y2);
+        //gp.lineTo(x1+adj, y2);
+        //gp.quadTo(x1, y2, x1, y2-adj);
+        //gp.curveTo(cx2, cy2, cx1, cy1, x1-adj, y1+adj);
+        gp.closePath();
+        return gp;
     }
     
     private BufferedImage createClipImage(Shape s) {

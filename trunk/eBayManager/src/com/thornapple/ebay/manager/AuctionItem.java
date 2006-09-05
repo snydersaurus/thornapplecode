@@ -10,7 +10,9 @@
 package com.thornapple.ebay.manager;
 
 import com.ebay.soap.eBLBaseComponents.ItemType;
+import com.ebay.soap.eBLBaseComponents.ListingDetailsType;
 import com.ebay.soap.eBLBaseComponents.PictureDetailsType;
+import com.ebay.soap.eBLBaseComponents.SellingStatusType;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
@@ -99,7 +101,7 @@ public class AuctionItem {
             result.setScale(2, RoundingMode.HALF_UP);
             return result.doubleValue();
         } else
-            return (Double)null;
+            return -1;
     }
     
     public double getTotalCost(){
@@ -146,5 +148,34 @@ public class AuctionItem {
     
     public void removeLabel(String label){
         this.labels.remove(label);
+    }
+
+    public String getBids() {
+        SellingStatusType sellingStatus = item.getSellingStatus(); 
+        System.out.println("Bid count:"+sellingStatus.getBidderCount());
+        if (sellingStatus != null){
+            Long bidCount = sellingStatus.getBidderCount();
+            if (bidCount != null)
+                return ""+bidCount;
+            else return "N/A";
+        }
+        else
+            return "N/A";
+    }
+
+    public String getTimeEnd() {
+        ListingDetailsType listingDetails =
+                item.getListingDetails();
+        if (listingDetails != null){
+            return listingDetails.getEndTime().toString();
+        } else
+            return "N/A";
+    }
+
+    public String getTimeLeft() {
+        if (item.getTimeLeft() != null)
+            return item.getTimeLeft().toString();
+        else
+            return "N/A";
     }
 }
