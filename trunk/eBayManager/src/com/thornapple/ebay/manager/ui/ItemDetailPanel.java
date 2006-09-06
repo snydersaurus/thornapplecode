@@ -19,6 +19,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.event.ListSelectionEvent;
@@ -58,7 +60,8 @@ public class ItemDetailPanel extends SimpleGradientPanel {
         initComponents();
         imageList.addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent e) {
-                jXImagePanel1.setImage((Image)imageList.getModel().getElementAt(e.getFirstIndex()));
+                jXImagePanel1.setImage((Image)imageList.getModel().getElementAt(imageList.getSelectedIndex()));
+                jXImagePanel1.repaint();
             }});
     }
     
@@ -66,6 +69,10 @@ public class ItemDetailPanel extends SimpleGradientPanel {
     public ItemDetailPanel(AuctionItem item) {
         initComponents();
         this.item = item;
+         imageList.addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent e) {
+                jXImagePanel1.setImage((Image)imageList.getModel().getElementAt(e.getFirstIndex()));
+            }});
     }
     
     /** This method is called from within the constructor to
@@ -259,13 +266,13 @@ public class ItemDetailPanel extends SimpleGradientPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         CardLayout layout = (CardLayout) jXPanel2.getLayout();
         layout.first(jXPanel2);
         
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         CardLayout layout = (CardLayout) jXPanel2.getLayout();
         layout.last(jXPanel2);
@@ -368,15 +375,25 @@ public class ItemDetailPanel extends SimpleGradientPanel {
         fadeOut.start();
     }
     
+    
     private class ImageListModel extends AbstractListModel {
         private PictureDetailsType pics;
+        private List imageList;
         
         public ImageListModel(PictureDetailsType pics) {
             this.pics = pics;
+            imageList = new ArrayList(getSize());
+            Thread loader = new Thread(){public void run(){
+                try {loadImagesIntoModel();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }}};
+            loader.start();    
         }
         
         public Object getElementAt(int index) {
-            return pics.getPictureURL(index);
+            if (index >= imageList.size()) return null;
+            return imageList.get(index);
         }
         
         public int getSize() {
@@ -385,6 +402,15 @@ public class ItemDetailPanel extends SimpleGradientPanel {
         
         public void fireContentsChanged() {
             fireContentsChanged(this, 0, getSize());
+        }
+        
+        private void loadImagesIntoModel() throws Exception {
+            int size = getSize();
+            for (int i = 0; i < size; i++) {
+                imageList.add(ImageIO.read(new URI(pics.getPictureURL()[i].toString()).toURL()));
+                //System.out.println("loading thumbnail from " + new URI(value.toString()).toURL());)
+                fireContentsChanged();
+            }
         }
     }
 }

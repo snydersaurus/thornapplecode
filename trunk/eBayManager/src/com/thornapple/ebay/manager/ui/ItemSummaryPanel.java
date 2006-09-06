@@ -12,6 +12,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXImagePanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
@@ -29,6 +30,8 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         initComponents();
         this.tableModel = tableModel;
         jXImagePanel1.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
+        jXImagePanel1.setImage(ItemDetailPanel.LOADING);
+        
     }
     
     /** This method is called from within the constructor to
@@ -51,6 +54,7 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         txtTitle = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtSubtitle = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
 
         jXPanel1.setAlpha(0.7F);
         jXPanel1.setBorder(dropShadowBorder1);
@@ -83,7 +87,7 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         lblPrice.setFont(new java.awt.Font("Tahoma", 3, 12));
         lblPrice.setText("Price");
 
-        lblShipping.setText("Shipping");
+        lblShipping.setText("$1");
 
         lblTime.setText("time");
 
@@ -96,6 +100,7 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane1.setOpaque(false);
         txtTitle.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
         txtTitle.setColumns(20);
         txtTitle.setEditable(false);
@@ -110,6 +115,8 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         jScrollPane2.setBorder(null);
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane2.setEnabled(false);
+        jScrollPane2.setOpaque(false);
         txtSubtitle.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
         txtSubtitle.setColumns(20);
         txtSubtitle.setEditable(false);
@@ -121,6 +128,8 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         txtSubtitle.setOpaque(false);
         jScrollPane2.setViewportView(txtSubtitle);
 
+        jLabel2.setText("Shipping");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,7 +137,10 @@ public class ItemSummaryPanel extends javax.swing.JPanel
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(lblShipping)
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblShipping))
                     .add(jXImagePanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(lblPrice))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -160,7 +172,9 @@ public class ItemSummaryPanel extends javax.swing.JPanel
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(lblPrice)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblShipping)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(lblShipping)
+                            .add(jLabel2))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -182,21 +196,36 @@ public class ItemSummaryPanel extends javax.swing.JPanel
         else
             setBorder(null);
         
-        AuctionItem item = (AuctionItem)tableModel.getElementAt(row);
+        final AuctionItem item = (AuctionItem)tableModel.getElementAt(row);
         txtTitle.setText(item.getItem().getTitle());
         txtSubtitle.setText(item.getItem().getSubTitle());
-        jXImagePanel1.setImage(item.getGalleryImage());
-        lblPrice.setText(""+item.getCurrentPrice());
-        lblShipping.setText(""+item.getShippingCost());
+        lblPrice.setText("$ "+item.getCurrentPrice());
+        lblShipping.setText("$ "+item.getShippingCost());
         lblBids.setText(item.getBids());
         lblTime.setText(item.getTimeLeft());
+        jXImagePanel1.setImage(item.getGalleryImage());
+        
+        
+        //swingworker
+//        SwingWorker loader = new SwingWorker(){
+//            protected Object doInBackground() throws Exception {
+//                return SwingWorker.StateValue.DONE;
+//            }
+//            
+//            protected void done() {
+//                jXImagePanel1.repaint();
+//            }
+//        };
+//        loader.execute();
+        
         return this;
     }
-
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.border.DropShadowBorder dropShadowBorder1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

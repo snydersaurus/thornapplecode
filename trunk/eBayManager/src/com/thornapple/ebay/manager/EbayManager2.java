@@ -163,6 +163,7 @@ public class EbayManager2 extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         jSplitPane1.setDividerLocation(260);
+        jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setOpaque(false);
         jXPanel1.setOpaque(false);
         jScrollPane1.setOpaque(false);
@@ -203,6 +204,7 @@ public class EbayManager2 extends javax.swing.JFrame {
         jSplitPane1.setLeftComponent(jXPanel1);
 
         jSplitPane2.setDividerLocation(300);
+        jSplitPane2.setResizeWeight(0.5);
         tblResults.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
