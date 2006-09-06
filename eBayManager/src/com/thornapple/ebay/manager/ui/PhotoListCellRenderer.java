@@ -6,15 +6,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
-import java.net.URI;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
+import org.jdesktop.swingx.JXImagePanel;
 
 class PhotoListCellRenderer extends DefaultListCellRenderer {
     private final Border empty = BorderFactory.createEmptyBorder(3, 3, 5, 3);
@@ -22,7 +20,12 @@ class PhotoListCellRenderer extends DefaultListCellRenderer {
         BorderFactory.createEmptyBorder(0, 0, 2, 0),
         BorderFactory.createLineBorder(Color.WHITE, 3));
 
+    private JXImagePanel imagePanel = new JXImagePanel(); 
+     
+    
     PhotoListCellRenderer() {
+        imagePanel.setPreferredSize(new Dimension(96,96));
+        imagePanel.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
     }
 
     @Override
@@ -30,17 +33,17 @@ class PhotoListCellRenderer extends DefaultListCellRenderer {
                                                   boolean isSelected, boolean cellHasFocus) {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index,
                 isSelected, cellHasFocus);
-        try {
-            Image photo = ImageIO.read(new URI(value.toString()).toURL());
-            System.out.println("loading thumbnail from " + new URI(value.toString()).toURL());
-            label.setIcon(new ImageIcon(photo));
-        } catch (Exception ex) {
-            //ex.printStackTrace();
-            label.setIcon(new ImageIcon(ItemDetailPanel.LOADING));
-        } 
-        label.setText("");
-        label.setOpaque(false);
         
+        if (value instanceof Image){
+            try {
+                imagePanel.setImage((Image)value);
+            } catch (Exception ex) {
+                imagePanel.setImage(ItemDetailPanel.LOADING);
+                //ex.printStackTrace();
+            }
+        } else
+            imagePanel.setImage(ItemDetailPanel.LOADING);
+            
         //if (photo.isSmallSquareImageLoaded()) {
             //BufferedImage img = photo.getSmallSquareImage();
             //img = GraphicsUtil.createThumbnail(img,100);
@@ -50,11 +53,11 @@ class PhotoListCellRenderer extends DefaultListCellRenderer {
             //label.setText("Loading...");
         //}
         
-        label.setBackground(null);
-        label.setBorder(isSelected ? selection : empty);
-        label.setOpaque(false);
+        imagePanel.setBackground(null);
+        imagePanel.setBorder(isSelected ? selection : empty);
+        imagePanel.setOpaque(false);
 
-        return label;
+        return imagePanel;
     }
     
     @Override
