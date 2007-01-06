@@ -12,7 +12,6 @@ package com.thornapple.ebay.manager.ui;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.CollectionList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.TextFilterator;
 import ca.odell.glazedlists.UniqueList;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
@@ -22,6 +21,7 @@ import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.thornapple.ebay.manager.AuctionItem;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +29,6 @@ import java.util.Set;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -62,10 +61,14 @@ public class MatcherFactory {
         
         LabelsSelectMatcher labelsMatcher =
                 new LabelsSelectMatcher(source,panel.getLabelListComponent());
+
+        CategoriesSelectMatcher categoriesMatcher =
+                new CategoriesSelectMatcher(source,panel.getCategoryListComponent());
         
         EventList matchers = new BasicEventList();
         matchers.add(titleMatcher);
         matchers.add(labelsMatcher);
+        matchers.add(categoriesMatcher);
         matchers.add(maxPriceMatcher);
         matchers.add(minPriceMatcher);
         
@@ -82,6 +85,13 @@ public class MatcherFactory {
         
         public List<String> getChildren(AuctionItem item ) {
             return item.getLabels();
+        }
+    }
+    
+    class ItemsToCategoriesModel implements CollectionList.Model<AuctionItem, String> {
+        
+        public List<String> getChildren(AuctionItem item ) {
+            return item.getCategories();
         }
     }
     
@@ -111,6 +121,40 @@ public class MatcherFactory {
             List _labels = item.getLabels();
             for (Object _label : _labels) {
                 if (labels.contains(_label))
+                    return true;
+            }
+            
+            return false;
+            
+        }
+    }
+    
+    class CategoriesForItemsMatcher implements Matcher {
+        
+        /** the users to match */
+        private Set categories = new HashSet();
+        
+        /**
+         * Create a new {@link IssuesForUsersMatcher} that matches only
+         * {@link Issue}s that have one or more user in the specified list.
+         */
+        public CategoriesForItemsMatcher(Collection categories) {
+            // make a defensive copy of the users
+            this.categories.addAll(categories);
+        }
+        
+        /**
+         * Test whether to include or not include the specified issue based
+         * on whether or not their user is selected.
+         */
+        public boolean matches(Object o) {
+            if(o == null) return false;
+            if(categories.isEmpty()) return true;
+            
+            AuctionItem item = (AuctionItem)o;
+            List _labels = item.getCategories();
+            for (Object _label : _labels) {
+                if (categories.contains(_label))
                     return true;
             }
             
@@ -162,4 +206,46 @@ public class MatcherFactory {
         }
     }
     
+     class CategoriesSelectMatcher extends AbstractMatcherEditor implements ListSelectionListener {
+        
+        /** a list of labels */
+        EventList categoriesEventList;
+        EventList categoriesSelectedList;
+        
+        /**
+         * Create a {@link LabelsForItemsMatcherEditor} that matches users from the
+         * specified {@link EventList} of {@link AuctionItems}s.
+         */
+        public CategoriesSelectMatcher(EventList source, JList list) {
+            // derive the users list from the issues list
+            CollectionList<AuctionItem, String> categoriesNonUnique =
+                    new CollectionList<AuctionItem, String>(source, new ItemsToCategoriesModel());
+            //EventList labelsNonUnique = new ItemsToLabelsList(source);
+            categoriesEventList = new UniqueList(categoriesNonUnique);
+            
+            // create a JList that contains users
+            EventListModel categoriesListModel = new EventListModel(categoriesEventList);
+            list.setModel(categoriesListModel);
+            
+            // create an EventList containing the JList's selection
+            EventSelectionModel categoriesSelectionModel = new EventSelectionModel(categoriesEventList);
+            list.setSelectionModel(categoriesSelectionModel);
+            categoriesSelectedList = categoriesSelectionModel.getSelected();
+            
+            // handle changes to the list's selection
+            list.addListSelectionListener(this);
+            
+        }
+        
+        
+        /**
+         * When the JList selection changes, create a new Matcher and fire
+         * an event.
+         */
+        public void valueChanged(ListSelectionEvent e) {
+            Matcher newMatcher = new CategoriesForItemsMatcher(categoriesSelectedList);
+            fireChanged(newMatcher);
+            
+        }
+    }
 }

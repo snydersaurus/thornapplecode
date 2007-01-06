@@ -24,6 +24,7 @@ import com.elevenworks.swing.panel.BrushedMetalScrollPaneUI;
 import com.elevenworks.swing.panel.BrushedMetalSplitPaneUI;
 import com.elevenworks.swing.panel.TigerInfoPanelUI;
 import com.thornapple.ebay.manager.action.FindItemsAction;
+import com.thornapple.ebay.manager.action.LoadMyEbayItemsAction;
 import com.thornapple.ebay.manager.ui.BrushedMetalTableHeaderSortableRenderer;
 import com.thornapple.ebay.manager.ui.ItemSummaryPanel;
 import com.thornapple.ebay.manager.ui.MatcherFactory;
@@ -94,7 +95,8 @@ public class EbayManager2 extends javax.swing.JFrame {
         ((JCheckBox)booleanEditor.getComponent()).setUI(new StarButtonUI());
        
         //tblResults.getColumn(1).setCellRenderer(new ItemSummaryPanel(itemTableModel));
-        tblResults.setRowHeight(150);
+        tblResults.setRowHeight(160);
+        
         tblResults.getColumnModel().setColumnMargin(0);
         tblResults.setUI(new SpanTableUI());
         tblResults.getColumn(0).setWidth(40);
@@ -160,6 +162,9 @@ public class EbayManager2 extends javax.swing.JFrame {
 
         itemDetailPanel1 = new com.thornapple.ebay.manager.ui.ItemDetailPanel();
         itemDetailPanel1.setUI(new TigerInfoPanelUI());
+        jXPanel2 = new org.jdesktop.swingx.JXPanel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         jSplitPane1.setDividerLocation(260);
@@ -185,9 +190,9 @@ public class EbayManager2 extends javax.swing.JFrame {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jXPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                     .add(jButton1)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jXPanel1Layout.setVerticalGroup(
@@ -198,7 +203,7 @@ public class EbayManager2 extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jSplitPane1.setLeftComponent(jXPanel1);
@@ -224,20 +229,51 @@ public class EbayManager2 extends javax.swing.JFrame {
         itemDetailPanel1.setMaximumSize(new java.awt.Dimension(500, 500));
         jSplitPane2.setRightComponent(itemDetailPanel1);
 
+        jButton2.setText("My eBay");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Add Label");
+
+        org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(jXPanel2);
+        jXPanel2.setLayout(jXPanel2Layout);
+        jXPanel2Layout.setHorizontalGroup(
+            jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel2Layout.createSequentialGroup()
+                .addContainerGap(411, Short.MAX_VALUE)
+                .add(jButton3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton2)
+                .addContainerGap())
+        );
+        jXPanel2Layout.setVerticalGroup(
+            jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel2Layout.createSequentialGroup()
+                .addContainerGap(28, Short.MAX_VALUE)
+                .add(jXPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jButton2)
+                    .add(jButton3)))
+        );
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
                 .addContainerGap())
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jXPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                .add(jXPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSplitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jSplitPane1.setRightComponent(jPanel1);
@@ -248,14 +284,14 @@ public class EbayManager2 extends javax.swing.JFrame {
             brushedMetalPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(brushedMetalPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 828, Short.MAX_VALUE)
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE)
                 .addContainerGap())
         );
         brushedMetalPanel1Layout.setVerticalGroup(
             brushedMetalPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(brushedMetalPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -271,6 +307,10 @@ public class EbayManager2 extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        new LoadMyEbayItemsAction(itemEventList).actionPerformed(null);
+    }//GEN-LAST:event_jButton2ActionPerformed
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         doSearch();
@@ -297,6 +337,8 @@ public class EbayManager2 extends javax.swing.JFrame {
     private com.thornapple.ebay.manager.ui.ItemFilterPanel itemFilterPanel1;
     private com.thornapple.ebay.manager.ui.ItemSearchPanel itemSearchPanel1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -304,6 +346,7 @@ public class EbayManager2 extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private org.jdesktop.swingx.JXPanel jXPanel1;
+    private org.jdesktop.swingx.JXPanel jXPanel2;
     private org.jdesktop.swingx.JXTable tblResults;
     // End of variables declaration//GEN-END:variables
     

@@ -13,20 +13,27 @@ import com.ebay.sdk.ApiAccount;
 import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.ApiCredential;
 import com.ebay.sdk.call.GetItemCall;
+import com.ebay.sdk.call.GetMyeBayCall;
 import com.ebay.sdk.call.GetSearchResultsCall;
 import com.ebay.sdk.eBayAccount;
+import com.ebay.sdk.helper.ui.ControlTagItem;
 import com.ebay.soap.eBLBaseComponents.AmountType;
+import com.ebay.soap.eBLBaseComponents.CategoryArrayType;
+import com.ebay.soap.eBLBaseComponents.CategoryType;
 import com.ebay.soap.eBLBaseComponents.DetailLevelCodeType;
 import com.ebay.soap.eBLBaseComponents.ItemIDType;
 import com.ebay.soap.eBLBaseComponents.ItemType;
 import com.ebay.soap.eBLBaseComponents.PriceRangeFilterType;
 import com.ebay.soap.eBLBaseComponents.ProximitySearchType;
+import com.ebay.soap.eBLBaseComponents.RequestCategoriesType;
 import com.ebay.soap.eBLBaseComponents.SearchFlagsCodeType;
 import com.ebay.soap.eBLBaseComponents.SearchResultItemType;
 import com.thornapple.ebay.manager.AuctionItem;
 import com.thornapple.ebay.manager.ItemSearchCriteria;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -36,11 +43,15 @@ public class EbayItemAdapter {
     
     private ApiContext apiContext;
     private EbayAdapterConfiguration config;
+    private Map categoryMap = new HashMap();
     
     /** Creates a new instance of EbayItemAdapter */
     public EbayItemAdapter() {
         config = EbayAdapterConfiguration.getInstance();
         apiContext = new ApiContext();
+        //ApiLogging apiLogging = new ApiLogging();
+        //this.apiContext.setApiLogging(apiLogging);
+        
         ApiCredential cred = apiContext.getApiCredential();
         ApiAccount ac = cred.getApiAccount();
         eBayAccount ec = cred.geteBayAccount();
@@ -48,11 +59,39 @@ public class EbayItemAdapter {
         apiContext.setApiServerUrl(config.getApiIURL());
     }
     
+    public List getMyEbayItemsWatching() throws Exception{
+        List results = new ArrayList();
+        
+        GetMyeBayCall api = new GetMyeBayCall(this.apiContext);
+        
+        ControlTagItem ct;
+        //ct = (ControlTagItem)this.cbxActiveSort.getSelectedItem();
+        //api.setActiveSort((ItemSortTypeCodeType)ct.Tag);
+        
+        //ct = (ControlTagItem)this.cbxWatchSort.getSelectedItem();
+        //api.setWatchSort((ItemSortTypeCodeType)ct.Tag);
+        
+        api.getMyeBay();
+        ItemType[] _temp = api.getReturnedWatchList();
+        
+        if (_temp == null) return results;
+        
+        AuctionItem item = null;
+        for (int i = 0; i < _temp.length; i++) {
+            item = new AuctionItem(_temp[i]);
+            item.addLabel("Watching");
+            results.add(item);
+        }
+        
+        return results;
+    }
+    
     public AuctionItem getItemDetails(String id)
     throws Exception {
         GetItemCall gc = new GetItemCall(apiContext);
         DetailLevelCodeType[] detailLevels = new DetailLevelCodeType[] {
             DetailLevelCodeType.ReturnAll,
+            DetailLevelCodeType.ItemReturnCategories,
             DetailLevelCodeType.ItemReturnAttributes,
             DetailLevelCodeType.ItemReturnDescription
         };
@@ -76,6 +115,21 @@ public class EbayItemAdapter {
         
         GetSearchResultsCall api = new GetSearchResultsCall(this.apiContext);
         api.setQuery(criteria.getQuery());
+        
+        
+        DetailLevelCodeType[] detailLevels = new DetailLevelCodeType[] {
+            DetailLevelCodeType.ReturnAll,
+            DetailLevelCodeType.ItemReturnCategories,
+            DetailLevelCodeType.ItemReturnDescription
+        };
+        api.setDetailLevel(detailLevels);
+        
+        //returns the totals per category - still need category of individual item
+        RequestCategoriesType categories = new RequestCategoriesType();
+        categories.setLevels(4);
+        categories.setMaxCategories(5);
+        categories.setMaxSubcategories(5);
+        api.setCategories(categories);
         
         // Search flags
         ArrayList al = new ArrayList();
@@ -111,11 +165,18 @@ public class EbayItemAdapter {
         }
         
         SearchResultItemType[] _temp = api.getSearchResults();
+        CategoryArrayType c = api.getReturnedCategoryArray();
+        CategoryType[] cats = c.getCategory();
+        for (int i = 0; i < cats.length; i++) {
+            if (!categoryMap.containsKey(cats[i].getCategoryID()))
+                categoryMap.put(cats[i].getCategoryID(),cats[i].getCategoryName());
+        }
+        //System.out.println(cats.getCategory(0).getCategoryName() + ":"+cats.getCategory(0).getNumOfItems());
         
         AuctionItem item = null;
         for (int i = 0; i < _temp.length; i++) {
             item = new AuctionItem(_temp[i].getItem());
-
+            item.getCategories().add( getCategoryName(_temp[i].getItem().getPrimaryCategory().getCategoryID()) );
             if (filterTotalCost) {
                 if (item.getTotalCost() <= criteria.getMaximumPrice())
                     results.add(item);
@@ -127,6 +188,24 @@ public class EbayItemAdapter {
         
     }
     
+    public String getCategoryName(String categoryID){
+        return (String) categoryMap.get(categoryID);
+    }
     
+    public static void main (String[] args) throws Exception {
+        EbayItemAdapter ebay = new EbayItemAdapter();
+        ItemSearchCriteria criteria = new ItemSearchCriteria();
+        criteria.setQuery("guild acoustic guitar");
+        List<AuctionItem> items = ebay.findItems(criteria);
+        ItemType item = items.get(0).getItem();
+        System.out.println(item.getPrimaryCategory().getCategoryID());
+        //AttributeType[] atts = item.getAttributeArray().getAttribute();
+        //for (int i=0;i<atts.length;i++){
+            //System.out.println(atts[i].getAttributeLabel());
+        //}
+        //for (AuctionItem item : items) {
+            //System.out.println(item.getID() + " " + item.getItem().getPrimaryCategory());
+        //}
+    }
     
 }
