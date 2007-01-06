@@ -37,6 +37,7 @@ public class AuctionItem {
     private boolean shippingCostAvailable;
     
     private List labels = new ArrayList();
+    private List categories = new ArrayList();
     private static final String LABEL_STAR = "Starred";
     private static BufferedImage NO_IMAGE;
     private Image image;
@@ -152,9 +153,9 @@ public class AuctionItem {
 
     public String getBids() {
         SellingStatusType sellingStatus = item.getSellingStatus(); 
-        System.out.println("Bid count:"+sellingStatus.getBidderCount());
+        
         if (sellingStatus != null){
-            Long bidCount = sellingStatus.getBidderCount();
+            Integer bidCount = sellingStatus.getBidCount();
             if (bidCount != null)
                 return ""+bidCount;
             else return "N/A";
@@ -166,6 +167,7 @@ public class AuctionItem {
     public String getTimeEnd() {
         ListingDetailsType listingDetails =
                 item.getListingDetails();
+        
         if (listingDetails != null){
             return listingDetails.getEndTime().toString();
         } else
@@ -178,4 +180,23 @@ public class AuctionItem {
         else
             return "N/A";
     }
+
+    public boolean isGalleryLoaded() {
+        System.out.println(image == null);
+        return this.image == null;
+    }
+
+    public List getCategories() {
+        /*if (categories == null) {
+            categories = new ArrayList();
+            if (item.getPrimaryCategory() != null) {
+                System.out.println(item.getPrimaryCategory().getCategoryID());
+                categories.add(item.getPrimaryCategory().getCategoryID());
+            }
+            if (item.getSecondaryCategory() != null)
+                categories.add(item.getSecondaryCategory().getCategoryID());
+        }*/
+        return categories;
+    }
+
 }
