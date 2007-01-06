@@ -52,14 +52,19 @@ public class MatcherFactory {
     }
     
     public MatcherEditor createMatcher(EventList source, SongBrowseForm panel){
+        
+        
         TextComponentMatcherEditor songTitleMatcher =
                 new TextComponentMatcherEditor(panel.getSongTitleComponent(),new SongTitleFilter());
         
         TextComponentMatcherEditor artistTitleMatcher =
                 new TextComponentMatcherEditor(panel.getArtistTitleComponent(),new ArtistNameFilter());
         
+        FilterList filteredSource = 
+                new FilterList(source,songTitleMatcher);
+
         ArtistsSelectMatcher artistsMatcher =
-                new ArtistsSelectMatcher(source,
+                new ArtistsSelectMatcher(filteredSource,
                     panel.getArtistListComponent(),
                     panel.getArtistTitleComponent());
         
