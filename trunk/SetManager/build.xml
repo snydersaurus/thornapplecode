@@ -5,6 +5,7 @@
 <project name="SetManager" default="default" basedir=".">
     <description>Builds, tests, and runs the project SetManager.</description>
     <import file="nbproject/build-impl.xml"/>
+    <import file="nbproject/build-jaws-impl.xml"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -66,4 +67,19 @@
     nbproject/build-impl.xml file. 
 
     -->
+    
+    <target name="-post-jar">
+        
+        <!--signjar
+            alias="http://thornapplecode.com" keystore="setmanager.keys"
+            storepass="setmanager">
+             <fileset dir="dist/" includes="**/*.jar" />
+        </signjar-->
+        
+         <!--pack200 src="${test}/Test.jar" 
+            destfile="${test}/testout.jar
+            repack="true-->
+    </target>
+    
 </project>
+

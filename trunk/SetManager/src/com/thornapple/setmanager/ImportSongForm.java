@@ -6,10 +6,14 @@
 
 package com.thornapple.setmanager;
 
+import ca.odell.glazedlists.EventList;
+import com.thornapple.setmanager.action.ImportSongAction;
 import com.thornapple.setmanager.adapter.SongSearchService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JList;
+import javax.swing.ListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -18,17 +22,24 @@ import javax.swing.event.ListSelectionListener;
  * @author  Bill
  */
 public class ImportSongForm extends javax.swing.JPanel {
+    
     private boolean artistInit, songInit;
-     SongSearchService searchService = new SongSearchService();
-     //use this if we want to use some filters?
-     //EventList songs = new BasicEventList();
+    private SongSearchService searchService = new SongSearchService();
+    private CheckListManager checkListManager;
+    private EventList songs;
      
     /** Creates new form ImportSongForm */
     public ImportSongForm() {
         initComponents();
+        checkListManager = new CheckListManager(jList2); 
         jList2.addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent e) {
-                Song song = (Song)jList2.getSelectedValue();
+                Object selected = jList2.getSelectedValue();
+                Song song = null;
+                if (selected instanceof Song)
+                    song = (Song)selected;
+                else 
+                    return;
                 try {
                     if (song != null && song.getTablature() == null)
                         searchService.getTab(song);
@@ -40,6 +51,10 @@ public class ImportSongForm extends javax.swing.JPanel {
                 //}
             }});
             //do this somewhere else
+    }
+    
+    public void setSongs(EventList songs){
+        this.songs = songs;
     }
     
     public JList getSongListComponent(){
@@ -72,11 +87,21 @@ public class ImportSongForm extends javax.swing.JPanel {
         jLabel3.setText("URL");
 
         jButton3.setText("...");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel4.setText("File");
 
         jButton4.setText("...");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel5.setText("From ChristianGuitar.org");
@@ -177,6 +202,16 @@ public class ImportSongForm extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+// TODO add your handling code here:
+        new ImportSongAction(songs,ImportSongAction.ADD_URL).actionPerformed(null);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+// TODO add your handling code here
+        new ImportSongAction(songs,ImportSongAction.ADD_FILE).actionPerformed(null);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     private void txtSongNameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSongNameMouseClicked
         if (!songInit && "type song name".equals(txtSongName.getText())){
             txtSongName.setText("");
@@ -203,6 +238,19 @@ public class ImportSongForm extends javax.swing.JPanel {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    List getSelectedSongs() {
+        ArrayList selectedSongs =
+                new ArrayList();
+        //add check songs to the list
+        ListModel listModel = jList2.getModel();
+        for (int i = 0; i < listModel.getSize(); i++) {
+            if (checkListManager.getSelectionModel().isSelectedIndex(i))
+                selectedSongs.add(listModel.getElementAt(i));
+        }
+        
+        return selectedSongs;
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

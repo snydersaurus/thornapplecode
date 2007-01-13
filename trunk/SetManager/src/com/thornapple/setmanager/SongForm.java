@@ -6,7 +6,10 @@
 
 package com.thornapple.setmanager;
 
-import com.thornapple.setmanager.adapter.PersistenceService;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -19,6 +22,16 @@ public class SongForm extends javax.swing.JPanel {
     /** Creates new form SongForm */
     public SongForm() {
         initComponents();
+        txtTab.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+            }
+            public void insertUpdate(DocumentEvent e) {
+                song.setTablature(txtTab.getText());
+            }
+            public void removeUpdate(DocumentEvent e) {
+                song.setTablature(txtTab.getText());
+            }
+        });
     }
     
     /** This method is called from within the constructor to

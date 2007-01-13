@@ -48,6 +48,16 @@ public class SaveSongAction extends AbstractAction {
     
     private void addSong(Song song){
         try {
+            
+            if (song == null){
+                System.out.print("song is null");
+                return;
+            }
+
+            boolean add = false;
+            if (song.getId() == null || song.getId() < 1)
+                add = true;
+            
             //if artist exists, attach song to it
             Artist artist = song.getArtist();
             List<Artist> artists = repository.getArtistByName(artist.getName());
@@ -65,7 +75,8 @@ public class SaveSongAction extends AbstractAction {
             if (song.getTablature() == null)
                 searchService.getTab(song);
             
-            songs.add(song);
+            if (add)
+                songs.add(song);
 
         } catch (Exception ex) {
             ex.printStackTrace();

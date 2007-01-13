@@ -11,6 +11,7 @@ package com.thornapple.setmanager;
 
 import com.thornapple.setmanager.adapter.PersistenceService;
 import com.thornapple.setmanager.adapter.SongSearchService;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -45,10 +46,22 @@ public class SetManagerTest {
         a1.addSong(s1);
         repository.addOrUpdateArtist(a1);
     }
+
+    public PersistenceService getRepository() {
+        return repository;
+    }
     
     public static void main(String args[]) throws Exception {
-        SetManagerTest test = new SetManagerTest();
-        test.testAddArtist();
+        //SetManagerTest test = new SetManagerTest();
+        //test.testAddArtist();
+        File dist = new File("C:\\development\\SetManager\\dist\\lib");
+        File[] libs = dist.listFiles();
+        //<jar download="eager" href="dist/SetManager.jar" main="false"/>
+        for (int i = 0; i < libs.length; i++) {
+            System.out.print(" <jar download=\"eager\" href=\"");
+            System.out.print("dist/lib/" + libs[i].getName());
+            System.out.println("\" main=\"false\"/>");
+        }
     }
     
 }

@@ -30,10 +30,10 @@ public class PersistenceService {
     
     private static PersistenceService instance;
     
-    private final static String DOES_ARTIST_EXIST = 
+    private final static String DOES_ARTIST_EXIST =
             "select a from Artist a where name = ?1";
     
-    private final static String DOES_SONG_EXIST = 
+    private final static String DOES_SONG_EXIST =
             "select s from Song s where name = ?1";
     
     /**
@@ -87,7 +87,7 @@ public class PersistenceService {
             return a;
         }
     }
-     
+    
     public List<Artist> getArtistByName(String name) throws Exception {
         EntityTransaction tx = manager.getTransaction();
         tx.begin();
@@ -102,7 +102,7 @@ public class PersistenceService {
             return null;
         }
     }
-     
+    
     public boolean songExists(Song song) throws Exception{
         boolean ok = false;
         List songs = getSongByName(song.getName());
@@ -131,7 +131,15 @@ public class PersistenceService {
         EntityTransaction tx = manager.getTransaction();
         tx.begin();
         try {
+            
             Artist artist = manager.find(Artist.class,artistID);
+            
+            if (song.getId() != null && song.getId() > 0) {
+                manager.merge(song);
+                tx.commit();
+                return true;
+            }
+            
             artist.addSong(song);
             manager.persist(artist);
             tx.commit();
@@ -176,6 +184,7 @@ public class PersistenceService {
         try {
             tx.begin();
             for (Song song : songs) {
+                song.setArtist(null);
                 manager.remove(song);
                 manager.flush();
             }
@@ -200,7 +209,7 @@ public class PersistenceService {
         return results;
     }
     
-     public List getAllArtists(){
+    public List getAllArtists(){
         EntityTransaction tx = manager.getTransaction();
         List<Song> results = null;
         tx.begin();
@@ -225,12 +234,12 @@ public class PersistenceService {
         PersistenceService service = PersistenceService.getInstance();
         List<Song> songs = service.getAllSongs();
         for(Song s : songs) {
-                System.out.println("got a song: " + s.getName() + " by " + s.getArtist());
-            }
+            System.out.println("got a song: " + s.getName() + " by " + s.getArtist());
+        }
 //        Artist a = new Artist();
 //        a.setName("Bill Snyder");
 //        service.addArtist(a);
-//        
+//
 //        Song s = new Song("The Great Adventure");
 //        s.setTablature("tab.....");
 //        a.addSong(s);
