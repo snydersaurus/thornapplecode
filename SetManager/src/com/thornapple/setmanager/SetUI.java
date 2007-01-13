@@ -30,16 +30,24 @@ public class SetUI extends javax.swing.JPanel {
     public void setSongList(final EventList songs){
         this.songs = songs;
         songBrowseForm1.setSongs(songs);
+        importSongForm1.setSongs(songs);
         
         songBrowseForm1.getSongListComponent().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())return;
                 Song song = (Song) songBrowseForm1.getSongListComponent().getSelectedValue();
                 songForm1.setSong(song);
             }
         });
         importSongForm1.getSongListComponent().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                Song song = (Song) importSongForm1.getSongListComponent().getSelectedValue();
+                Object selected = 
+                        importSongForm1.getSongListComponent().getSelectedValue();
+                Song song = null;
+                if (selected instanceof Song)
+                    song = (Song)selected;
+                else 
+                    return;
                 songForm1.setSong(song);
             }
         });
@@ -54,17 +62,20 @@ public class SetUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         songForm1 = new com.thornapple.setmanager.SongForm();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        navPane = new javax.swing.JTabbedPane();
         songBrowseForm1 = new com.thornapple.setmanager.SongBrowseForm();
         importSongForm1 = new com.thornapple.setmanager.ImportSongForm();
+        setsForm1 = new com.thornapple.setmanager.SetsForm();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         songForm1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jTabbedPane1.addTab("My Library", songBrowseForm1);
+        navPane.addTab("My Library", songBrowseForm1);
 
-        jTabbedPane1.addTab("Add Songs", importSongForm1);
+        navPane.addTab("Add Songs", importSongForm1);
+
+        navPane.addTab("My Sets", setsForm1);
 
         jButton1.setText("Save");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -85,7 +96,7 @@ public class SetUI extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 296, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(navPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 296, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
@@ -99,7 +110,7 @@ public class SetUI extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+            .add(navPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButton1)
@@ -116,10 +127,12 @@ public class SetUI extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        List newSongs = Arrays.asList(
-                importSongForm1.getSongListComponent().getSelectedValues());
+        List newSongs = null;
+        if (navPane.getSelectedIndex() == 1) 
+            newSongs = importSongForm1.getSelectedSongs();
+        else 
+            newSongs = songBrowseForm1.getSelectedSongs();
         new SaveSongAction(songs,newSongs).actionPerformed(null);
-        //TODO import bunch at once
         //TODO delete a bunch at once
         //TODO move songs to another artist
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -129,7 +142,8 @@ public class SetUI extends javax.swing.JPanel {
     private com.thornapple.setmanager.ImportSongForm importSongForm1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane navPane;
+    private com.thornapple.setmanager.SetsForm setsForm1;
     private com.thornapple.setmanager.SongBrowseForm songBrowseForm1;
     private com.thornapple.setmanager.SongForm songForm1;
     // End of variables declaration//GEN-END:variables

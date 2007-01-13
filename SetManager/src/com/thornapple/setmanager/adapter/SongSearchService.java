@@ -126,7 +126,7 @@ public class SongSearchService {
             String songName = songs[i].substring(songs[i].indexOf(">")+1);
             //if (songName.equalsIgnoreCase(name)) {
             //load tab and print
-            System.out.println(songID);
+            //System.out.println(songID);
             //URL u2 = new URL(SONG_TAB+songID);
             //System.out.println("contacting service " + SONG_TAB+songID);
             //InputStream is2 = u2.openConnection().getInputStream();

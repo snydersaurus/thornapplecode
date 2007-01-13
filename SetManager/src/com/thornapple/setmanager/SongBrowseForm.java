@@ -12,6 +12,8 @@ import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
@@ -137,7 +139,7 @@ public class SongBrowseForm extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabel3)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jScrollPane1))
                 .add(11, 11, 11)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabel4)
@@ -149,6 +151,12 @@ public class SongBrowseForm extends javax.swing.JPanel {
     private void txtArtistNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtArtistNameActionPerformed
 // TODO add your handling code here:
     }//GEN-LAST:event_txtArtistNameActionPerformed
+
+    List getSelectedSongs() {
+        Object[] selected =
+               songList.getSelectedValues();
+        return Arrays.asList(selected);
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
