@@ -21,10 +21,16 @@ import javax.swing.event.ListSelectionListener;
 public class SetUI extends javax.swing.JPanel {
     
     EventList songs;
+    EventList songSets;
     
     /** Creates new form SetUI */
     public SetUI() {
         initComponents();
+    }
+    
+    public void setSongSetList(final EventList songSets){
+        this.songSets = songSets;
+        setsForm1.setSongSets(songSets);
     }
     
     public void setSongList(final EventList songs){
