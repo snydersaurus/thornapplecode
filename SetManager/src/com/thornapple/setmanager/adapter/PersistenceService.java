@@ -11,11 +11,11 @@ package com.thornapple.setmanager.adapter;
 
 import com.thornapple.setmanager.Artist;
 import com.thornapple.setmanager.Song;
+import com.thornapple.setmanager.SongSet;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
@@ -163,6 +163,23 @@ public class PersistenceService {
         return true;
     }
     
+    public boolean addOrUpdateSongSet(SongSet songset) throws Exception{
+        EntityTransaction tx = manager.getTransaction();
+        boolean update = false;
+        try {
+            tx.begin();
+            if (songset.getId() == null || songset.getId() < 0)
+                manager.persist(songset);
+            else
+                manager.merge(songset);
+            tx.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            tx.rollback();
+        }
+        return true;
+    }
+    
     public boolean removeSong(Song song) throws Exception{
         EntityTransaction tx = manager.getTransaction();
         boolean update = false;
@@ -227,14 +244,33 @@ public class PersistenceService {
         return results;
     }
     
+    public List getAllSongSets(){
+        EntityTransaction tx = manager.getTransaction();
+        List<SongSet> results = null;
+        tx.begin();
+        try {
+            Query query = manager.createQuery("select s from SongSet s");
+            results = (List<SongSet>)query.getResultList();
+            tx.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return results;
+    }
+    
     public static void main(String[] args) throws Exception {
         //Class.forName("org.hsqldb.jdbcDriver").newInstance();
         //Connection c = DriverManager.getConnection("jdbc:hsqldb:file:test", "sa", "");
-        
         PersistenceService service = PersistenceService.getInstance();
-        List<Song> songs = service.getAllSongs();
-        for(Song s : songs) {
-            System.out.println("got a song: " + s.getName() + " by " + s.getArtist());
+        List<Song> songs = service.getSongByName("Enough");
+        Song testSong = songs.get(0);
+        SongSet testSet = new SongSet("Test Set", "");
+        testSet.addSong(testSong);
+        
+        service.addOrUpdateSongSet(testSet);
+        List<SongSet> songsets = service.getAllSongSets();
+        for(SongSet s : songsets) {
+            System.out.println("got a songset: " + s.getName());
         }
 //        Artist a = new Artist();
 //        a.setName("Bill Snyder");

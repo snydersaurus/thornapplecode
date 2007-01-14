@@ -8,6 +8,7 @@ package com.thornapple.setmanager;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import com.thornapple.setmanager.action.LoadSongSetsAction;
 import com.thornapple.setmanager.action.LoadSongsAction;
 import javax.swing.UIManager;
 
@@ -18,17 +19,22 @@ import javax.swing.UIManager;
 public class SetManager2 extends javax.swing.JFrame {
     
     private EventList songs = new BasicEventList();
+    private EventList songSets = new BasicEventList();
     
     /** Creates new form SetManager2 */
     public SetManager2() {
         initComponents();
         setUI1.setSongList(songs);
+        setUI1.setSongSetList(songSets);
         loadSongs();
     }
     
     private void loadSongs(){
         LoadSongsAction songLoader = new LoadSongsAction(songs);
         songLoader.actionPerformed(null);
+        
+        LoadSongSetsAction songSetLoader = new LoadSongSetsAction(songSets);
+        songSetLoader.actionPerformed(null);
     }
     
     /** This method is called from within the constructor to

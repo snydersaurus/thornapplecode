@@ -4,6 +4,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>com.thornapple.setmanager.Artist</class>
     <class>com.thornapple.setmanager.Song</class>
+    <class>com.thornapple.setmanager.SongSet</class>
     <properties>
       <property name="hibernate.connection.url" value="jdbc:h2:C:/development/SetManager/setmanager;FILE_LOCK=NO"/>
       <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
