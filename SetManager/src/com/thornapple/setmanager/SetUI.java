@@ -31,6 +31,7 @@ public class SetUI extends javax.swing.JPanel {
     public void setSongSetList(final EventList songSets){
         this.songSets = songSets;
         setsForm1.setSongSets(songSets);
+        songBrowseForm1.setSongSets(songSets);
     }
     
     public void setSongList(final EventList songs){
