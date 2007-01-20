@@ -262,15 +262,19 @@ public class PersistenceService {
         //Class.forName("org.hsqldb.jdbcDriver").newInstance();
         //Connection c = DriverManager.getConnection("jdbc:hsqldb:file:test", "sa", "");
         PersistenceService service = PersistenceService.getInstance();
-        List<Song> songs = service.getSongByName("Enough");
-        Song testSong = songs.get(0);
-        SongSet testSet = new SongSet("Test Set", "");
-        testSet.addSong(testSong);
+        //List<Song> songs = service.getSongByName("Enough");
+        //Song testSong = songs.get(0);
+        //SongSet testSet = new SongSet("Test Set", "");
+        //testSet.addSong(testSong);
         
-        service.addOrUpdateSongSet(testSet);
+        //service.addOrUpdateSongSet(testSet);
         List<SongSet> songsets = service.getAllSongSets();
         for(SongSet s : songsets) {
             System.out.println("got a songset: " + s.getName());
+            List<Song> songs = s.getSongs();
+            for (Song song : songs) {
+                System.out.println(song);
+            }
         }
 //        Artist a = new Artist();
 //        a.setName("Bill Snyder");

@@ -12,8 +12,10 @@ import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
+import com.thornapple.setmanager.action.SaveSongSetAction;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 
@@ -24,11 +26,9 @@ import javax.swing.JTextField;
 public class SongBrowseForm extends javax.swing.JPanel {
     
     EventList songs = new BasicEventList();
+    EventList songSets = new BasicEventList();
     
-     /*Create a sorted list for the table*/
     private SortedList sortedItems;
-    
-    /*Create a list filtered by the ItemFilterPanel*/
     private FilterList filteredList;
     
     private EventListModel listModel;
@@ -38,6 +38,12 @@ public class SongBrowseForm extends javax.swing.JPanel {
     /** Creates new form SongBrowseForm */
     public SongBrowseForm() {
         initComponents();
+    }
+    
+    public void setSongSets(EventList songSets){
+        this.songSets = songSets;
+        System.out.println("songsets:"+songSets.size());
+        cboSet.setModel(new SongSetComboBoxModel(songSets));
     }
     
     public void setSongs(EventList songs){
@@ -87,6 +93,8 @@ public class SongBrowseForm extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         songList = new javax.swing.JList();
+        cboSet = new javax.swing.JComboBox();
+        btnAddToSet = new javax.swing.JButton();
 
         jLabel1.setText("Song Name");
 
@@ -106,6 +114,13 @@ public class SongBrowseForm extends javax.swing.JPanel {
 
         jScrollPane2.setViewportView(songList);
 
+        btnAddToSet.setText("Add to Set");
+        btnAddToSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddToSetActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,22 +128,31 @@ public class SongBrowseForm extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel2)
-                    .add(jLabel3)
-                    .add(jLabel4)
-                    .add(jLabel1))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .add(txtSongName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .add(txtArtistName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel2)
+                            .add(jLabel3)
+                            .add(jLabel4)
+                            .add(jLabel1))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                            .add(txtSongName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                            .add(txtArtistName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(cboSet, 0, 132, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnAddToSet)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(29, 29, 29)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(btnAddToSet)
+                    .add(cboSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(7, 7, 7)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
                     .add(txtSongName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -143,10 +167,17 @@ public class SongBrowseForm extends javax.swing.JPanel {
                 .add(11, 11, 11)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabel4)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddToSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddToSetActionPerformed
+        SongSet set = (SongSet) cboSet.getSelectedItem();
+        List songs = getSelectedSongs();
+        new SaveSongSetAction(songSets,set,songs).actionPerformed(null);
+        
+    }//GEN-LAST:event_btnAddToSetActionPerformed
 
     private void txtArtistNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtArtistNameActionPerformed
 // TODO add your handling code here:
@@ -161,6 +192,8 @@ public class SongBrowseForm extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList artistList;
+    private javax.swing.JButton btnAddToSet;
+    private javax.swing.JComboBox cboSet;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -171,5 +204,25 @@ public class SongBrowseForm extends javax.swing.JPanel {
     private javax.swing.JTextField txtArtistName;
     private javax.swing.JTextField txtSongName;
     // End of variables declaration//GEN-END:variables
-    
+ 
+    private class SongSetComboBoxModel extends DefaultComboBoxModel{
+        EventList<SongSet> songSets;
+        public SongSetComboBoxModel(EventList<SongSet> songSets){
+            super();
+            this.songSets = songSets;
+        }
+
+        public Object getElementAt(int index) {
+            Object retValue;
+            retValue = songSets.get(index);
+            return retValue;
+        }
+
+        public int getSize() {
+            int retValue;
+            retValue = songSets.size();
+            return retValue;
+        }
+
+    }
 }

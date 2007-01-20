@@ -81,6 +81,36 @@ public class MatcherFactory {
         return matcher;
     }
     
+    public MatcherEditor createMatcher(EventList source, SetsForm panel){
+        
+        
+        TextComponentMatcherEditor songTitleMatcher =
+                new TextComponentMatcherEditor(panel.getSongTitleComponent(),new SongTitleFilter());
+        
+        TextComponentMatcherEditor setNameMatcher =
+                new TextComponentMatcherEditor(panel.getSetNameComponent(),new SetNameFilter());
+        
+        FilterList filteredSource = 
+                new FilterList(source,songTitleMatcher);
+
+        //ArtistsSelectMatcher songsMatcher =
+        //        new ArtistsSelectMatcher(filteredSource,
+        //            panel.getSongSetListComponent(),
+        //            panel.getSetNameComponent());
+        
+        EventList matchers = new BasicEventList();
+        //matchers.add(songTitleMatcher);
+        matchers.add(setNameMatcher);
+        //matchers.add(songsMatcher);
+        
+        CompositeMatcherEditor matcher =
+                new CompositeMatcherEditor(matchers);
+        matcher.setMode(CompositeMatcherEditor.AND);
+        
+        
+        return matcher;
+    }
+    
     private class SongTitleFilter implements TextFilterator {
         
         public void getFilterStrings(List baseList, Object element) {
@@ -100,6 +130,18 @@ public class MatcherFactory {
                 Artist artist = (Artist)element;
                 baseList.add(artist.getName());
             }
+                
+        }
+        
+    }
+    
+    private class SetNameFilter implements TextFilterator {
+        
+        public void getFilterStrings(List baseList, Object element) {
+            if (element instanceof SongSet){
+                SongSet songSet = (SongSet)element;
+                baseList.add(songSet.getName());
+            } 
                 
         }
         
@@ -148,7 +190,7 @@ public class MatcherFactory {
                     new FilterList(artistsEventList,
                     new TextComponentMatcherEditor(text,new ArtistNameFilter()));
             
-            // create a JList that contains users
+            // create a JList that contains artists
             EventListModel artistsListModel = new EventListModel(filteredArtists);
             list.setModel(artistsListModel);
             
@@ -169,6 +211,48 @@ public class MatcherFactory {
          */
         public void valueChanged(ListSelectionEvent e) {
             Matcher newMatcher = new ArtistsForSongsMatcher(artistsSelectedList);
+            fireChanged(newMatcher);
+            
+        }
+    }
+    
+    class SetsSelectMatcher extends AbstractMatcherEditor implements ListSelectionListener {
+        
+        /** a list of labels */
+        EventList setsEventList;
+        EventList setsSelectedList;
+        FilterList filteredSets;
+        
+        public SetsSelectMatcher(EventList source, JList list, JTextComponent text) {
+            EventList setsNonUnique = new SongsToArtistsList(source);
+            setsEventList = new UniqueList(setsNonUnique);
+            
+            //filter this by the artist too!
+            filteredSets =
+                    new FilterList(setsEventList,
+                    new TextComponentMatcherEditor(text,new SetNameFilter()));
+            
+            // create a JList that contains users
+            EventListModel setsListModel = new EventListModel(filteredSets);
+            list.setModel(setsListModel);
+            
+            // create an EventList containing the JList's selection
+            EventSelectionModel setsSelectionModel = new EventSelectionModel(setsEventList);
+            list.setSelectionModel(setsSelectionModel);
+            setsSelectedList = setsSelectionModel.getSelected();
+            
+            // handle changes to the list's selection
+            list.addListSelectionListener(this);
+            
+        }
+        
+        
+        /**
+         * When the JList selection changes, create a new Matcher and fire
+         * an event.
+         */
+        public void valueChanged(ListSelectionEvent e) {
+            Matcher newMatcher = new ArtistsForSongsMatcher(setsSelectedList);
             fireChanged(newMatcher);
             
         }
