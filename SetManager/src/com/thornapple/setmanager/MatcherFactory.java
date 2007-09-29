@@ -84,19 +84,19 @@ public class MatcherFactory {
     public MatcherEditor createMatcher(EventList source, SetsForm panel){
         
         
-        TextComponentMatcherEditor songTitleMatcher =
-                new TextComponentMatcherEditor(panel.getSongTitleComponent(),new SongTitleFilter());
+        //TextComponentMatcherEditor songTitleMatcher =
+        //        new TextComponentMatcherEditor(panel.getSongTitleComponent(),new SongTitleFilter());
         
         TextComponentMatcherEditor setNameMatcher =
                 new TextComponentMatcherEditor(panel.getSetNameComponent(),new SetNameFilter());
         
-        FilterList filteredSource = 
-                new FilterList(source,songTitleMatcher);
-
-        //ArtistsSelectMatcher songsMatcher =
-        //        new ArtistsSelectMatcher(filteredSource,
-        //            panel.getSongSetListComponent(),
-        //            panel.getSetNameComponent());
+//        FilterList filteredSource = 
+//                new FilterList(source,setNameMatcher);
+//
+//        SetsSelectMatcher songsMatcher =
+//                new SetsSelectMatcher(filteredSource,
+//                    panel.getSongSetListComponent(),
+//                    panel.getSetNameComponent());
         
         EventList matchers = new BasicEventList();
         //matchers.add(songTitleMatcher);

@@ -46,6 +46,13 @@ public class SetUI extends javax.swing.JPanel {
                 songForm1.setSong(song);
             }
         });
+        setsForm1.getSongListComponent().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())return;
+                Song song = (Song) setsForm1.getSongListComponent().getSelectedValue();
+                songForm1.setSong(song);
+            }
+        });
         importSongForm1.getSongListComponent().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 Object selected = 
