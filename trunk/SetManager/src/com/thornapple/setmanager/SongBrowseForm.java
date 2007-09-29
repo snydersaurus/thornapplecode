@@ -10,10 +10,13 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import com.thornapple.setmanager.action.SaveSongSetAction;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
@@ -47,8 +50,8 @@ public class SongBrowseForm extends javax.swing.JPanel {
     }
     
     public void setSongs(EventList songs){
-        sortedItems = 
-            new SortedList(songs);
+        sortedItems =
+                new SortedList(songs);
         
         filteredList = new FilterList(sortedItems,
                 matcherFactory.createMatcher(songs,this));
@@ -57,6 +60,12 @@ public class SongBrowseForm extends javax.swing.JPanel {
         songList.setSelectionModel(selectionModel);
         listModel = new EventListModel(filteredList);
         songList.setModel(listModel);
+        
+        sortedItems.addListEventListener(new ListEventListener() {
+            public void listChanged(ListEvent event ) {
+                listModel.listChanged(event);
+            }
+        });
         
     }
     
@@ -113,6 +122,8 @@ public class SongBrowseForm extends javax.swing.JPanel {
         jLabel4.setText("Songs");
 
         jScrollPane2.setViewportView(songList);
+
+        cboSet.setEditable(true);
 
         btnAddToSet.setText("Add to Set");
         btnAddToSet.addActionListener(new java.awt.event.ActionListener() {
@@ -171,21 +182,26 @@ public class SongBrowseForm extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void btnAddToSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddToSetActionPerformed
-        SongSet set = (SongSet) cboSet.getSelectedItem();
+        Object item = cboSet.getSelectedItem();
+        SongSet set = null;
+        if (item instanceof String){
+           set = new SongSet(item.toString(),""); 
+        } else
+            set = (SongSet) item;
         List songs = getSelectedSongs();
         new SaveSongSetAction(songSets,set,songs).actionPerformed(null);
         
     }//GEN-LAST:event_btnAddToSetActionPerformed
-
+    
     private void txtArtistNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtArtistNameActionPerformed
 // TODO add your handling code here:
     }//GEN-LAST:event_txtArtistNameActionPerformed
-
+    
     List getSelectedSongs() {
         Object[] selected =
-               songList.getSelectedValues();
+                songList.getSelectedValues();
         return Arrays.asList(selected);
     }
     
@@ -204,25 +220,25 @@ public class SongBrowseForm extends javax.swing.JPanel {
     private javax.swing.JTextField txtArtistName;
     private javax.swing.JTextField txtSongName;
     // End of variables declaration//GEN-END:variables
- 
+    
     private class SongSetComboBoxModel extends DefaultComboBoxModel{
         EventList<SongSet> songSets;
         public SongSetComboBoxModel(EventList<SongSet> songSets){
             super();
             this.songSets = songSets;
         }
-
+        
         public Object getElementAt(int index) {
             Object retValue;
             retValue = songSets.get(index);
             return retValue;
         }
-
+        
         public int getSize() {
             int retValue;
             retValue = songSets.size();
             return retValue;
         }
-
+        
     }
 }
