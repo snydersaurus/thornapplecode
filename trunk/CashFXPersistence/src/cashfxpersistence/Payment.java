@@ -13,7 +13,10 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -29,10 +32,12 @@ import javax.persistence.TemporalType;
 @NamedQueries({@NamedQuery(name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.id = :id"), @NamedQuery(name = "Payment.findByPayeeId", query = "SELECT p FROM Payment p WHERE p.payeeId = :payeeId"), @NamedQuery(name = "Payment.findByAmount", query = "SELECT p FROM Payment p WHERE p.amount = :amount"), @NamedQuery(name = "Payment.findByStartDate", query = "SELECT p FROM Payment p WHERE p.startDate = :startDate"), @NamedQuery(name = "Payment.findByEndDate", query = "SELECT p FROM Payment p WHERE p.endDate = :endDate"), @NamedQuery(name = "Payment.findByOccurence", query = "SELECT p FROM Payment p WHERE p.occurence = :occurence")})
 public class Payment implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Integer id;
-    @Column(name = "PAYEE_ID", nullable = false)
-    private int payeeId;
+    @ManyToOne
+    //@Column(name = "PAYEE_ID", nullable = false)
+    private Payee payee;
     @Column(name = "AMOUNT", nullable = false)
     private double amount;
     @Column(name = "START_DATE", nullable = false)
@@ -47,13 +52,9 @@ public class Payment implements Serializable {
     public Payment() {
     }
 
-    public Payment(Integer id) {
+    public Payment(Integer id, Payee payee, double amount, Date startDate, Date endDate, String occurence) {
         this.id = id;
-    }
-
-    public Payment(Integer id, int payeeId, double amount, Date startDate, Date endDate, String occurence) {
-        this.id = id;
-        this.payeeId = payeeId;
+        this.payee = payee;
         this.amount = amount;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -68,12 +69,12 @@ public class Payment implements Serializable {
         this.id = id;
     }
 
-    public int getPayeeId() {
-        return payeeId;
+    public Payee getPayee() {
+        return payee;
     }
 
-    public void setPayeeId(int payeeId) {
-        this.payeeId = payeeId;
+    public void setPayee(Payee payee) {
+        this.payee = payee;
     }
 
     public double getAmount() {
