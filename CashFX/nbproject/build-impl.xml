@@ -307,7 +307,9 @@ is divided into following sections:
                 COMPILATION SECTION
                 ===================
             -->
-    <target depends="init" name="deps-jar" unless="no.deps"/>
+    <target depends="init" name="deps-jar" unless="no.deps">
+        <ant antfile="${project.CashFXPersistence}/build.xml" inheritall="false" target="jar"/>
+    </target>
     <target depends="init,deps-jar" name="-pre-pre-compile">
         <mkdir dir="${build.classes.dir}"/>
     </target>
@@ -363,7 +365,7 @@ is divided into following sections:
     <target depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class" name="-do-jar-with-mainclass" unless="manifest.available+main.class+mkdist.available">
         <javafxproject1:jar manifest="${manifest.file}">
             <javafxproject1:manifest>
-                <javafxproject1:attribute name="Main-Class" value="${main.class}"/>
+                <javafxproject1:attribute name="Main-Class" value="${main.fx.class}"/>
             </javafxproject1:manifest>
         </javafxproject1:jar>
         <echo>To run this application from the command line without Ant, try:</echo>
@@ -392,13 +394,13 @@ is divided into following sections:
         <copylibs compress="${jar.compress}" jarfile="${dist.jar}" manifest="${manifest.file}" runtimeclasspath="${run.classpath.without.build.classes.dir}">
             <fileset dir="${build.classes.dir}"/>
             <manifest>
-                <attribute name="Main-Class" value="${main.class}"/>
+                <attribute name="Main-Class" value="${main.fx.class}"/>
                 <attribute name="Class-Path" value="${jar.classpath}"/>
             </manifest>
         </copylibs>
         <echo>To run this application from the command line without Ant, try:</echo>
         <property location="${dist.jar}" name="dist.jar.resolved"/>
-        <echo>java -jar "${dist.jar.resolved}"</echo>
+        <echo>java -jar "${dist.jar.resolved}" ${main.class}</echo>
     </target>
     <target name="-post-jar">
         <!-- Empty placeholder for easier customization. -->
@@ -607,7 +609,9 @@ is divided into following sections:
                 CLEANUP SECTION
                 ===============
             -->
-    <target depends="init" name="deps-clean" unless="no.deps"/>
+    <target depends="init" name="deps-clean" unless="no.deps">
+        <ant antfile="${project.CashFXPersistence}/build.xml" inheritall="false" target="clean"/>
+    </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>

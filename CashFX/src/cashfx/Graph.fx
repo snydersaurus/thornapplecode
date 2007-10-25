@@ -158,7 +158,7 @@ Payment{amount:-20,date:"10-4-2007",description:"Chipotle"},
 Payment{amount:50,date:"10-5-2007",description:"Chipotle"},
 Payment{amount:120,date:"10-6-2007",description:"Chipotle"},
 Payment{amount:20,date:"10-7-2007",description:"Chipotle"}
-];
+];//dataLoader.loadData("10-1-2007,10-31-2007);
 initializeData(graph,graph.data);
 
 var frame = Frame{
