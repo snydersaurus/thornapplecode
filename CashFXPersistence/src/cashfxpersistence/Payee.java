@@ -12,6 +12,8 @@ package cashfxpersistence;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -26,6 +28,7 @@ import javax.persistence.Table;
 @NamedQueries({@NamedQuery(name = "Payee.findById", query = "SELECT p FROM Payee p WHERE p.id = :id"), @NamedQuery(name = "Payee.findByName", query = "SELECT p FROM Payee p WHERE p.name = :name")})
 public class Payee implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Integer id;
     @Column(name = "NAME", nullable = false)
