@@ -20,9 +20,9 @@ import javax.persistence.Table;
  * @author TWXS025
  */
 @Entity
-@Table(name = "PAYEE")
-@NamedQueries({@NamedQuery(name = "Payee.findById", query = "SELECT p FROM Payee p WHERE p.id = :id"), @NamedQuery(name = "Payee.findByName", query = "SELECT p FROM Payee p WHERE p.name = :name")})
-public class Payee implements Serializable {
+@Table(name = "LABEL")
+@NamedQueries({@NamedQuery(name = "Label.findById", query = "SELECT l FROM Label l WHERE l.id = :id"), @NamedQuery(name = "Label.findByName", query = "SELECT l FROM Label l WHERE l.name = :name")})
+public class Label implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Payee implements Serializable {
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    public Payee() {
+    public Label() {
     }
 
     public long getId() {
@@ -60,10 +60,10 @@ public class Payee implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Payee)) {
+        if (!(object instanceof Label)) {
             return false;
         }
-        Payee other = (Payee) object;
+        Label other = (Label) object;
         if (this.id != other.id) {
             return false;
         }
@@ -72,7 +72,7 @@ public class Payee implements Serializable {
 
     @Override
     public String toString() {
-        return "cashfxpersistence.Payee[id=" + id + "]";
+        return "cashfxpersistence.Label[id=" + id + "]";
     }
 
 }
