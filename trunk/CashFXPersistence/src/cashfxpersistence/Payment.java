@@ -1,8 +1,4 @@
 /*
- * Payment.java
- * 
- * Created on Oct 23, 2007, 11:15:16 PM
- * 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -10,15 +6,20 @@
 package cashfxpersistence;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,17 +30,17 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "PAYMENT")
-@NamedQueries({@NamedQuery(name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.id = :id"), @NamedQuery(name = "Payment.findByPayeeId", query = "SELECT p FROM Payment p WHERE p.payeeId = :payeeId"), @NamedQuery(name = "Payment.findByAmount", query = "SELECT p FROM Payment p WHERE p.amount = :amount"), @NamedQuery(name = "Payment.findByStartDate", query = "SELECT p FROM Payment p WHERE p.startDate = :startDate"), @NamedQuery(name = "Payment.findByEndDate", query = "SELECT p FROM Payment p WHERE p.endDate = :endDate"), @NamedQuery(name = "Payment.findByOccurence", query = "SELECT p FROM Payment p WHERE p.occurence = :occurence")})
+//@NamedQueries({@NamedQuery(name = "Payment.findById", query = "SELECT p FROM Payment p WHERE p.id = :id"), @NamedQuery(name = "Payment.findByPayeeId", query = "SELECT p FROM Payment p WHERE p.payeeId = :payeeId"), @NamedQuery(name = "Payment.findByAmount", query = "SELECT p FROM Payment p WHERE p.amount = :amount"), @NamedQuery(name = "Payment.findByStartDate", query = "SELECT p FROM Payment p WHERE p.startDate = :startDate"), @NamedQuery(name = "Payment.findByEndDate", query = "SELECT p FROM Payment p WHERE p.endDate = :endDate"), @NamedQuery(name = "Payment.findByOccurence", query = "SELECT p FROM Payment p WHERE p.occurence = :occurence")})
 public class Payment implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
-    private Integer id;
+    private long id;
     @ManyToOne
-    //@Column(name = "PAYEE_ID", nullable = false)
     private Payee payee;
     @Column(name = "AMOUNT", nullable = false)
-    private double amount;
+    private float amount;
     @Column(name = "START_DATE", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date startDate;
@@ -48,24 +49,27 @@ public class Payment implements Serializable {
     private Date endDate;
     @Column(name = "OCCURENCE", nullable = false)
     private String occurence;
+    @OneToMany(mappedBy="payment", cascade=CascadeType.ALL)
+    private List<PaymentOverride> overrides = new ArrayList();
+    @ManyToMany(
+        targetEntity=Label.class,
+        cascade={CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JoinTable(
+        name="PAYMENT_LABEL",
+        joinColumns={@JoinColumn(name="LABEL_ID")},
+        inverseJoinColumns={@JoinColumn(name="PAYMENT_ID")}
+    )
+    private List<Label> labels = new ArrayList();
 
     public Payment() {
     }
 
-    public Payment(Integer id, Payee payee, double amount, Date startDate, Date endDate, String occurence) {
-        this.id = id;
-        this.payee = payee;
-        this.amount = amount;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.occurence = occurence;
-    }
-
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -77,11 +81,11 @@ public class Payment implements Serializable {
         this.payee = payee;
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -108,11 +112,28 @@ public class Payment implements Serializable {
     public void setOccurence(String occurence) {
         this.occurence = occurence;
     }
+    
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
+    }
+    
+    public void setPaymentOverrides(List<PaymentOverride> overrides) {
+        this.overrides = overrides;
+    }
+
+    public List<PaymentOverride> getPaymentOverrides() {
+        return overrides;
+    }
+
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        //hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -123,7 +144,7 @@ public class Payment implements Serializable {
             return false;
         }
         Payment other = (Payment) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (id != other.id) {
             return false;
         }
         return true;
@@ -132,6 +153,15 @@ public class Payment implements Serializable {
     @Override
     public String toString() {
         return "cashfxpersistence.Payment[id=" + id + "]";
+    }
+
+    public void addLabel(Label label) {
+        this.labels.add(label);
+    }
+    
+    public void addPaymentOverride(PaymentOverride override){
+        override.setPayment(this);
+        this.overrides.add(override);
     }
 
 }
