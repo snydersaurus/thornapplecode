@@ -12,7 +12,6 @@ import com.jhlabs.image.NoiseFilter;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.geom.Point2D;
-import org.jdesktop.swingx.painter.ImageEffect;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 /**
@@ -34,9 +33,9 @@ public class EbayBuyerPanel extends javax.swing.JPanel {
         blur.setDistance(20.0f);
         BrushedMetalFilter metal = new BrushedMetalFilter();
         metal.setMonochrome(false);
-        gradient.setEffects(new ImageEffect(noise),
-                new ImageEffect(blur));
-        gradient.setUseCache(true);
+        //gradient.setEffects(new FilteredAreaEffect(noise),
+        //        new FilteredAreaEffect(blur));
+        //gradient.setUseCache(true);
         this.jXPanel1.setBackgroundPainter(gradient);
         
     }

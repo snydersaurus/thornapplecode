@@ -7,14 +7,9 @@
 package com.thornapple.ebay.manager.ui;
 
 import com.sun.javaone.aerith.g2d.AnimationUtil;
-import java.awt.Color;
 import java.awt.Container;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.jdesktop.animation.timing.TimingController;
+import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
-import org.jdesktop.jdic.browser.BrowserEngineManager;
-import org.jdesktop.jdic.browser.WebBrowser;
 
 /**
  *
@@ -90,29 +85,40 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         final Container parent = jXPanel1.getParent();
-        TimingController fadeOut = AnimationUtil.createFadeInAnimation(jXPanel1);
-        fadeOut.addTarget(new TimingTarget() {
-            public void begin() {parent.add(jXPanel1);}
-            public void end() {
-                //parent.remove(jXPanel1);
-                parent.repaint();
+        Animator fadeIn = AnimationUtil.createFadeInAnimation(jXPanel1);
+        fadeIn.addTarget(new TimingTarget(){
+            public void timingEvent(float fraction) {
+                //parent.repaint();
             }
-            public void timingEvent(long l, long l0, float f) {parent.repaint();}
-        });
-        fadeOut.start();
+
+            public void begin() {
+            }
+
+            public void end() {
+            }
+
+            public void repeat() {
+            }});
+        fadeIn.start();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         final Container parent = jXPanel1.getParent();
-        TimingController fadeOut = AnimationUtil.createFadeOutAnimation(jXPanel1);
-        fadeOut.addTarget(new TimingTarget() {
-            public void begin() {parent.repaint();}
-            public void end() {
-                parent.remove(jXPanel1);
-                parent.repaint();
+        Animator fadeOut = AnimationUtil.createFadeOutAnimation(jXPanel1);
+        fadeOut.addTarget(new TimingTarget(){
+            public void timingEvent(float fraction) {
+                //parent.repaint();
             }
-            public void timingEvent(long l, long l0, float f) {parent.repaint();}
-        });
+
+            public void begin() {
+            }
+
+            public void end() {
+            }
+
+            public void repeat() {
+            }});
+        fadeOut.start();
         fadeOut.start();
     }//GEN-LAST:event_jButton2ActionPerformed
     
