@@ -79,7 +79,7 @@ public class ThButtonUI extends BasicButtonUI {
                 .getText() == null ? 0 : b.getIconTextGap());
         
         if (model.isArmed() && model.isPressed()) {
-            matte.setPaint(GLOSS_BASE_COLOR);
+            matte.setFillPaint(GLOSS_BASE_COLOR);
             paintButtonPressed(g, b);new MetalButtonUI();
         }
         
@@ -89,21 +89,21 @@ public class ThButtonUI extends BasicButtonUI {
         
         if ( b.isFocusPainted() && b.hasFocus()){
             System.out.println("focused or selected");
-            matte.setPaint(MATTE_BASE_COLOR);
+            matte.setFillPaint(MATTE_BASE_COLOR);
             gloss.setPosition(GlossPainter.GlossPosition.TOP);
             paintFocus(g, b, viewRect, textRect, iconRect);
         } else {
             System.out.println("regular");
-            matte.setPaint(MATTE_BASE_COLOR);
+            matte.setFillPaint(MATTE_BASE_COLOR);
             gloss.setPosition(GlossPainter.GlossPosition.TOP);
         }
         
         if (model.isRollover()){
-            matte.setPaint(GLOSS_BASE_COLOR);
+            matte.setFillPaint(GLOSS_BASE_COLOR);
             gloss.setPosition(GlossPainter.GlossPosition.BOTTOM);
         }
         
-        cp.paint((Graphics2D) g, c);
+        cp.doPaint((Graphics2D) g, c,c.getWidth(),c.getHeight());
         //super.paint(g, c);
         if (text != null && !text.equals("")) {
             View v = (View) c.getClientProperty(BasicHTML.propertyKey);

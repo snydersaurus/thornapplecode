@@ -38,7 +38,7 @@ public class ItemSummaryPanel extends javax.swing.JPanel
     public ItemSummaryPanel(EventTableModel tableModel) {
         initComponents();
         this.tableModel = tableModel;
-        jXImagePanel1.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
+        jXImagePanel1.setStyle(JXImagePanel.Style.SCALED);
     }
     
     /** This method is called from within the constructor to

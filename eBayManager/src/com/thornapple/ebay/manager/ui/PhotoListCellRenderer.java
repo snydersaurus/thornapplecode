@@ -24,7 +24,7 @@ class PhotoListCellRenderer extends DefaultListCellRenderer {
     
     PhotoListCellRenderer() {
         imagePanel.setPreferredSize(new Dimension(96,96));
-        imagePanel.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
+        imagePanel.setStyle(JXImagePanel.Style.SCALED);
     }
     
     @Override

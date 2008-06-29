@@ -25,7 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.jdesktop.animation.timing.TimingController;
+import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.jdic.browser.BrowserEngineManager;
 import org.jdesktop.jdic.browser.WebBrowser;
@@ -88,7 +88,7 @@ public class ItemDetailPanel extends SimpleGradientPanel {
         jXPanel2.setUI(new TigerInfoPanelUI());
         jXPanel3 = new org.jdesktop.swingx.JXPanel();
         jXImagePanel1 = new org.jdesktop.swingx.JXImagePanel();
-        jXImagePanel1.setStyle(JXImagePanel.Style.SCALED_KEEP_ASPECT_RATIO);
+        jXImagePanel1.setStyle(JXImagePanel.Style.SCALED);
         jXImagePanel1.setUI(new TigerInfoPanelUI());
         imageListScrollPane = new javax.swing.JScrollPane();
         imageListScrollPane.getViewport().setOpaque(false);
@@ -187,7 +187,7 @@ public class ItemDetailPanel extends SimpleGradientPanel {
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        txtTitle.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
+        txtTitle.setBackground(new java.awt.Color(235, 233, 237));
         txtTitle.setColumns(20);
         txtTitle.setEditable(false);
         txtTitle.setFont(new java.awt.Font("Tahoma", 1, 12));
@@ -266,7 +266,7 @@ public class ItemDetailPanel extends SimpleGradientPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         CardLayout layout = (CardLayout) jXPanel2.getLayout();
         layout.first(jXPanel2);
@@ -349,28 +349,30 @@ public class ItemDetailPanel extends SimpleGradientPanel {
     
     public void transitionIn(){
         final Container parent = jXPanel2.getParent();
-        TimingController fadeOut = AnimationUtil.createFadeInAnimation(jXPanel2);
+        Animator fadeOut = AnimationUtil.createFadeInAnimation(jXPanel2);
         fadeOut.addTarget(new TimingTarget() {
             public void begin() {parent.repaint();}
             public void end() {
                 //parent.remove(ItemDetailPanel.this);
                 parent.repaint();
             }
-            public void timingEvent(long l, long l0, float f) {parent.repaint();}
+            public void repeat(){}
+            public void timingEvent(float f) {parent.repaint();}
         });
         fadeOut.start();
     }
     
     public void transitionOut(){
         final Container parent = jXPanel2.getParent();
-        TimingController fadeOut = AnimationUtil.createFadeOutAnimation(jXPanel2);
+        Animator fadeOut = AnimationUtil.createFadeOutAnimation(jXPanel2);
         fadeOut.addTarget(new TimingTarget() {
             public void begin() {parent.repaint();}
             public void end() {
                 //parent.remove(ItemDetailPanel.this);
                 parent.repaint();
             }
-            public void timingEvent(long l, long l0, float f) {parent.repaint();}
+            public void repeat(){}
+            public void timingEvent(float f) {parent.repaint();}
         });
         fadeOut.start();
     }

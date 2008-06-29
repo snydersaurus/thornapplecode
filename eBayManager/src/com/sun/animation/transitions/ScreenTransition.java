@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 import com.sun.animation.effects.ComponentState;
-import org.jdesktop.animation.timing.TimingController;
+import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 
 /**
@@ -116,7 +116,7 @@ public class ScreenTransition implements TimingTarget {
     /**
      * Timing engine for the transition animation.
      */
-    private TimingController timingController;
+    private Animator animator;
 
     /**
      * Constructor for ScreenTransition.  The application must supply the
@@ -201,7 +201,7 @@ public class ScreenTransition implements TimingTarget {
         animationLayer.setVisible(false);
         containerLayer.setVisible(true);
 	containerLayer.repaint();
-        timingController = null;
+        animator = null;
         transitionTarget.transitionComplete();
     }
 
@@ -226,12 +226,12 @@ public class ScreenTransition implements TimingTarget {
      * @param transitionTimeMS The length of this transition in milliseconds
      */
     public void startTransition(int transitionTimeMS) {
-        if (isTransitioning() && timingController != null) {
+        if (isTransitioning() && animator != null) {
             // REMIND: Might want something more robust here, such as
             // putting the application into a state representative of the
             // current transition, rather than just jumping to the end state
             // of the transition
-            timingController.stop();
+            animator.stop();
         }
         
 	// Reset the AnimationManager (this releases all previous transition
@@ -318,9 +318,27 @@ public class ScreenTransition implements TimingTarget {
         // exit this function to avoid flash of blank container
         timingEvent(0, 0, 0);
         
-        // Create the TimingController that will run the animation
-	timingController = new TimingController(transitionTimeMS, this);
-	timingController.start();
+        // Create the Animator that will run the animation
+	animator = new Animator(transitionTimeMS, this);
+	animator.start();
+    }
+
+    public void timingEvent(float fraction) {
+        Graphics2D gImg = (Graphics2D)transitionImage.getGraphics();
+
+        // copy background to transition image image
+        gImg.drawImage(transitionImageBG, 0, 0, null);
+
+        // Render this frame of the animation
+	animationManager.paint(gImg, fraction);
+        
+        gImg.dispose();
+        
+        // Force transitionImage to be copied to the glass pane
+        animationLayer.repaint();
+    }
+
+    public void repeat() {
     }
 }
 
